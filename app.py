@@ -60,7 +60,7 @@ except Exception as e:
 scaler = joblib.load("model/scaler.save")
 
 # Google OAuth client ID
-GOOGLE_CLIENT_ID = "851699343467-9a66uak9d637kurdbee67i6q6altiu0s.apps.googleusercontent.com"
+GOOGLE_CLIENT_ID = "YOUR_GOOGLE_CLIENT_ID"
 
 # Class labels for sonography prediction
 class_labels = {0: "infected", 1: "non_infected"}
