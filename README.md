@@ -79,7 +79,6 @@ GOOGLE_CLIENT_SECRET=your_google_client_secret
 ### 5. Run the Application
 
 ```bash
-python train_lstm_model.py
 python app.py
 ```
 
