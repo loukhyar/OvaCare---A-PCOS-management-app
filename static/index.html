@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>OvaCare - Login</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
+
+  <!-- Google Sign-In -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+  <style>
+    body {
+      font-family: 'Poppins', 'Segoe UI', sans-serif;
+      background: #fff0f5;
+      color: #2c2c2c;
+      margin: 0;
+      padding: 0;
+    }
+
+    main {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+      min-height: 100vh;
+    }
+
+    .login-container {
+      background: #fff;
+      padding: 40px 30px;
+      border-radius: 20px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .app-name {
+      font-family: 'Pacifico', cursive;
+      font-size: 2.2rem;
+      color: #d63384;
+      margin-bottom: 10px;
+    }
+
+    .tagline {
+      font-size: 1rem;
+      color: #6c757d;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      font-size: 1.3rem;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .g_id_signin {
+      margin: 10px auto;
+      display: inline-block;
+    }
+
+    #message {
+      margin-top: 20px;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 14px;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Main Login Section -->
+  <main>
+    <div class="login-container">
+      <div class="app-name">OvaCare</div>
+      <div class="tagline">Empowering your cycle, your care, your choice.</div>
+
+      <h1>Login with Google</h1>
+
+      <div id="g_id_onload"
+           data-client_id="851699343467-9a66uak9d637kurdbee67i6q6altiu0s.apps.googleusercontent.com"
+           data-context="signin"
+           data-callback="handleCredentialResponse"
+           data-auto_prompt="false">
+      </div>
+
+      <div class="g_id_signin"
+           data-type="standard"
+           data-shape="rectangular"
+           data-theme="outline"
+           data-text="sign_in_with"
+           data-size="large"
+           data-logo_alignment="left">
+      </div>
+
+      <div id="message"></div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2025 OvaCare | Your health, your harmony
+  </footer>
+
+  <!-- JavaScript: Google Sign-In Callback -->
+  <script>
+    function handleCredentialResponse(response) {
+      const id_token = response.credential;
+
+      fetch("/verify-token", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: id_token }),
+      })
+      .then(res => res.json())
+      .then(data => {
+        const messageEl = document.getElementById('message');
+        if (data.email) {
+          messageEl.style.color = "green";
+          messageEl.textContent = "✅ Logged in as " + data.email;
+          localStorage.setItem("userEmail", data.email);
+          localStorage.setItem("userName", data.name);
+          window.location.href = "/home";
+        } else {
+          messageEl.style.color = "red";
+          messageEl.textContent = "❌ Login failed: " + (data.error || "Unknown error");
+        }
+      })
+      .catch(err => {
+        const messageEl = document.getElementById('message');
+        messageEl.style.color = "red";
+        messageEl.textContent = "❌ Error: " + err.message;
+      });
+    }
+  </script>
+  
+  <footer style="background-color: #fce4ec; text-align: center; padding: 1.2em 0; color: #880e4f; font-size: 1em; margin-top: 2em; border-top: 2px solid #f8bbd0;">
+    Made with 💖 by OvaCare Team — Keep shining!
+  </footer>
+
+</body>
+</html>

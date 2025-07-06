@@ -1,0 +1,261 @@
+/* === Google Fonts === */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Pacifico&display=swap');
+
+/* === Reset & Base Styles === */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+
+body {
+  background: linear-gradient(to bottom right, #ffe6f0, #f3cce3);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  color:  #5d1049;
+}
+
+.header-container {
+  background-color: #fce4ec;
+  padding: 15px     25px;
+  border-bottom: 1px solid #e91e63;
+  position: relative;
+  z-index: 1000;
+}
+
+.header-container nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.logo-text {
+  font-family: 'Pacifico', cursive;
+  font-size: 2.5em;
+  color: #c2185b;
+  font-weight: bold;
+  animation: fadeInText 2s ease-out forwards;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  padding: 0;
+  margin: 0;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #880e4f;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+nav ul li a:hover {
+  background-color: #f48fb1;
+  color: white;
+}
+
+/* Optional animation */
+@keyframes fadeInText {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* === Yoga Planner Content === */
+.yoga-planner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px;
+  border-radius: 20px;
+  text-align: center;
+}
+
+.aa {
+  font-size: 2.5em;
+  font-family: 'Pacifico', cursive;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #c2185b;
+}
+
+.yoga-planner p {
+  font-size: 1.1em;
+  color: #5c165d;
+  margin-bottom: 15px;
+}
+
+/* === Filter Buttons === */
+.filter-buttons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin: 25px 0;
+}
+
+.filter-buttons button {
+  background-color: #fce4ec;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 25px;
+  font-weight: 600;
+  color: #5c165d;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.filter-buttons button:hover,
+.filter-buttons button.active {
+  background-color: #d6a1cf;
+  color: white;
+}
+
+/* === Yoga Grid === */
+.yoga-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 22px;
+  padding: 20px 0;
+  justify-items: center;
+}
+
+/* === Flip Cards === */
+.yoga-pose {
+  perspective: 1000px;
+  width: 100%;
+  max-width: 220px;
+  height: 230px; 
+  transition: transform 0.5s ease;
+}
+
+.card-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.8s ease-in-out;
+}
+
+.yoga-pose:hover .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 18px;
+  background: linear-gradient(to bottom, #fff0f7, #e6c1dc);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+  padding: 12px;
+  text-align: center;
+  font-family: 'Open Sans', sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card-front {
+  z-index: 2;
+}
+
+.card-front img {
+  width: 100%;
+  height: 140px; /* Adjusted for smaller height */
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.06);
+}
+
+.card-front h3 {
+  font-size: 1em;
+  margin: 10px 0 0;
+  color: #4a0053;
+}
+
+.card-back {
+  transform: rotateY(180deg);
+  background: linear-gradient(to bottom, #dbc3e6, #f6e0f1);
+  color: #4b004f;
+  padding: 16px;
+}
+
+.card-back h4 {
+  font-size: 1em;
+  margin-bottom: 8px;
+  color: #7a1a74;
+}
+
+.card-back p {
+  font-size: 0.88em;
+}
+
+/* === Footer === */
+footer {
+  background-color: #fce4ec;
+  text-align: center;
+  padding: 1.5em 0;
+  color: #880e4f;
+  font-size: 1em;
+  margin-top: 2em;
+  border-top: 2px solid #f8bbd0;
+}
+
+/* === Animation === */
+@keyframes fadeInText {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* === Responsive === */
+@media (max-width: 768px) {
+  .aa {
+    font-size: 2em;
+  }
+
+  .yoga-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+
+  .card-inner {
+    height: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .card-front img {
+    height: 130px;
+  }
+
+  .card-front h3,
+  .card-back h4 {
+    font-size: 0.95em;
+  }
+
+  .card-back p {
+    font-size: 0.82em;
+  }
+}

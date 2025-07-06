@@ -1,0 +1,248 @@
+body {
+    background: #FFF0F5;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #2c2c2c;
+}
+
+/* Header Container */
+.header-container {
+    background-color: #fce4ec;
+    padding: 15px 25px;
+    border-bottom: 1px solid #e91e63;
+    position: relative;
+    z-index: 1000;
+}
+
+/* Navigation */
+.header-container nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* Logo Text */
+.logo-text {
+    font-family: 'Pacifico', cursive;
+    font-size: 2.5em;
+    color: #c2185b;
+    font-weight: bold;
+    animation: fadeInText 2s ease-out forwards;
+}
+
+/* Nav Menu */
+nav ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 0;
+    margin: 0;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #880e4f;
+    font-weight: 600;
+    padding: 8px 12px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+nav ul li a:hover {
+    background-color: #f48fb1;
+    color: white;
+}
+
+
+
+/* Hero Section */
+.hero {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px 20px;
+    max-width: 1200px;
+    margin: 40px auto;
+    gap: 100px;
+    flex-wrap: nowrap;
+}
+
+.text-container {
+    flex: 1;
+    max-width: 500px;
+}
+
+.hero-title {
+    font-family: 'Pacifico', cursive;
+    color: #c2185b;
+    font-weight: 500;
+    margin-bottom: 10px;
+    font-size: 2em;
+    line-height: 1.5;
+}
+
+/* Form Styling */
+#predictionForm {
+    margin-top: 30px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #6a0dad;
+    font-weight: 600;
+    font-size: 1em;
+}
+
+.form-group input {
+    width: 100%;
+    max-width: 150px;
+    padding: 12px 15px;
+    font-size: 1em;
+    border: 2px solid #d1c1db;
+    border-radius: 15px;
+    background-color: #fff;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+    border-color: #c2185b;
+    outline: none;
+    box-shadow: 0 0 8px #f06292;
+}
+
+/* Beautiful Predict Button */
+.form-group button {
+    padding: 14px 20px;
+    background: linear-gradient(135deg, #d63384, #f668af);
+    color: rgb(226, 219, 219);
+    border: none;
+    border-radius: 30px;
+    font-size: 1.2em;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 6px 15px rgba(214, 51, 132, 0.6);
+    transition: background 0.4s ease, box-shadow 0.4s ease, transform 0.2s ease;
+}
+
+.form-group button:hover,
+.form-group button:focus {
+    background: linear-gradient(135deg, #c2185b, #e0528e);
+    box-shadow: 0 10px 25px rgba(194, 33, 91, 0.8);
+    outline: none;
+    transform: translateY(-2px);
+}
+
+/* Result Container */
+.result-container {
+    margin-top: 25px;
+    font-weight: 600;
+    font-size: 1.1em;
+    color: #4b0082;
+}
+
+/* Hero Image Styling */
+.hero-image {
+    flex: 1;
+    max-width: 450px;
+    border-radius: 25px;
+    box-shadow: 0 15px 30px rgba(194, 33, 91, 0.3);
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.hero-image:hover,
+.hero-image:focus {
+    transform: scale(1.05);
+    outline: none;
+}
+
+/* Animations */
+@keyframes fadeInText {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .hero {
+        flex-wrap: wrap;
+        gap: 30px;
+    }
+
+    .hero-image {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-container nav {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    nav ul {
+        flex-direction: column;
+    }
+
+    nav ul li {
+        margin: 10px 0;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-title {
+        font-size: 2em;
+    }
+
+    .form-group input {
+        max-width: 100%;
+    }
+
+    .form-group button {
+        width: 100%;
+        padding: 14px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo {
+        max-width: 60px;
+    }
+}
+
+main {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #fff0f5;
+    padding: 3px 10px;
+    color: #5d1049;
+}
+
+.hero-section {
+    text-align: center;
+    background-color: #fbb1ca;
+    border-radius: 20px;
+    padding: 5px 5px;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.hero-section h1 {
+    font-family: 'Pacifico', cursive;
+    font-size: 2em;
+    color: #c2185b;
+    margin: 0;
+}

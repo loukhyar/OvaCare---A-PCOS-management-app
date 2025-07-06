@@ -1,0 +1,352 @@
+body {
+    background: #FFF0F5;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #2c2c2c;
+}
+
+/* Header Container */
+.header-container {
+    background-color: #fce4ec;
+    padding: 15px 25px;
+    border-bottom: 1px solid #e91e63;
+    position: relative;
+    z-index: 1000;
+}
+
+/* Navigation */
+.header-container nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* Logo Text */
+.logo-text {
+    font-family: 'Pacifico', cursive;
+    font-size: 2.5em;
+    color: #c2185b;
+    font-weight: bold;
+    animation: fadeInText 2s ease-out forwards;
+}
+
+/* Nav Menu */
+nav ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 0;
+    margin: 0;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #880e4f;
+    font-weight: 600;
+    padding: 8px 12px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+nav ul li a:hover {
+    background-color: #f48fb1;
+    color: white;
+}
+
+
+/* Hero Section */
+.hero-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgba(255, 240, 245, 0.9);
+    padding: 2em;
+    flex-wrap: wrap;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(194, 24, 91, 0.1);
+    animation: fadeInText 2s ease-out forwards;
+}
+
+.hero-content {
+    max-width: 600px;
+    position: relative;
+    padding-right: 1em;
+}
+
+.hero-content h1 {
+    font-size: 2.4em;
+    margin-bottom: 1em;
+    color: #b31364;
+}
+
+.cta-button {
+    display: inline-block;
+    padding: 0.6em 1.2em;
+    background-color: #f8b400;
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 30px;
+    transition: background 0.3s ease;
+}
+
+.cta-button:hover {
+    background-color: #e89f00;
+}
+
+.curve-line {
+    width: 100%;
+    height: 5px;
+    background-color: #fff;
+    border-radius: 50px;
+    margin-top: -10px;
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+}
+
+/* Hero Image */
+.hero-image {
+    width: 45%;
+    max-width: 500px;
+    border-bottom-left-radius: 50px;
+    border-bottom-right-radius: 50px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Suggestions Section */
+.lifestyle-suggestions {
+    max-width: 1200px;
+    margin: 2em auto;
+    padding: 2em;
+    text-align: center;
+    border-radius: 20px;
+    background-color: #f9dce5;
+    box-shadow: 0 8px 20px rgba(194, 24, 91, 0.15);
+    animation: fadeInText 2.2s ease-out forwards;
+}
+
+.lifestyle-suggestions h2 {
+    font-size: 2.2em;
+    margin-bottom: 1em;
+    color: #6a0dad;
+}
+
+/* Image Row */
+.image-row {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 2em;
+}
+
+.image-row img {
+    width: 200px;
+    height: auto;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Suggestion Box */
+.suggestion-box {
+    background: rgba(255, 255, 255, 0.85);
+    padding: 1em;
+    margin-bottom: 2em;
+    border-radius: 15px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    animation: fadeInText 2.4s ease-out forwards;
+}
+
+.suggestion-category h3 {
+    font-size: 1.5em;
+    color: #c2185b;
+    margin-bottom: 0.5em;
+}
+
+.suggestion-category ul {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+    display: inline-block;
+}
+
+.suggestion-category ul li {
+    margin-bottom: 0.5em;
+    padding-left: 1.5em;
+    position: relative;
+    font-size: 1.05em;
+    color: #333;
+}
+
+.suggestion-category ul li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: #c2185b;
+    font-weight: bold;
+}
+
+/* Animations */
+@keyframes fadeInText {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .hero-image {
+        width: 40%;
+    }
+
+    .hero-content h1 {
+        font-size: 2em;
+    }
+
+    .cta-button {
+        padding: 0.5em 1em;
+    }
+
+    .image-row img {
+        width: 160px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-container nav {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    nav ul {
+        flex-direction: column;
+        padding: 0;
+    }
+
+    nav ul li {
+        margin: 10px 0;
+    }
+
+    .hero-section {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .hero-image {
+        width: 80%;
+        margin-top: 1em;
+    }
+
+    .image-row {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .image-row img {
+        width: 90%;
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo {
+        max-width: 60px;
+    }
+
+    .hero-content h1 {
+        font-size: 1.5em;
+    }
+
+    .cta-button {
+        padding: 0.4em 0.8em;
+        font-size: 0.9em;
+    }
+
+    .hero-image {
+        width: 100%;
+        border-radius: 0;
+    }
+
+    .image-row img {
+        width: 100%;
+        max-width: none;
+    }
+
+    .lifestyle-suggestions {
+        padding: 1em;
+    }
+}
+
+main {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #fff0f5;
+  padding: 40px 20px;
+  color: #5d1049;
+}
+
+.hero-section {
+  text-align: center;
+  background-color: #fce4ec;
+  border-radius: 20px;
+  padding: 30px 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.hero-section h1 {
+  font-family: 'Pacifico', cursive;
+  font-size: 2em;
+  color: #c2185b;
+  margin: 0;
+}
+
+.lifestyle-suggestions {
+  max-width: 800px;
+  margin: auto;
+}
+
+.lifestyle-suggestions h2 {
+  text-align: center;
+  font-size: 1.8em;
+  margin-bottom: 20px;
+  color: #ad1457;
+}
+
+.suggestion-box {
+  background-color: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.suggestion-category h3 {
+  color: #d63384;
+  margin-bottom: 10px;
+  font-size: 1.3em;
+}
+
+.suggestion-category ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.suggestion-category li {
+  padding: 6px 0;
+  border-left: 4px solid #f8bbd0;
+  padding-left: 10px;
+  margin-bottom: 6px;
+  background-color: #fffafc;
+  border-radius: 8px;
+}
+
