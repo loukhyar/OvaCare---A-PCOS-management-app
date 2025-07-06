@@ -1,0 +1,14 @@
+Flask
+flask-cors
+numpy
+pandas
+opencv-python
+tensorflow
+scikit-learn
+pymongo
+python-dotenv
+joblib
+google-auth
+google-auth-oauthlib
+google-generativeai
+bcrypt

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Self Diagnosis - OvaCare</title>
+  <link rel="stylesheet" href="styles2.css">
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+
+
+</head>
+<body>
+  <header class="header-container">
+    <nav>
+      <div class="logo-text">OvaCare</div>
+      <ul>
+        <li><a href="/static/home.html">Home</a></li>
+        <li><a href="/static/about.html">About Us</a></li>
+        <li><a href="/static/SymptomChecker.html">Symptom Checker</a></li>
+        <li><a href="/static/NutritionGuide.html">Nutrition Guide</a></li>
+        <li><a href="/static/yogaplanner.html">Mind & Movement</a></li>
+        <li><a href="/static/PeriodTracker.html">Period Tracker</a></li>
+        <li><a href="/static/WellnessTips.html">Wellness Tips</a></li>
+        <li><a href="/static/moodtracker.html">Mood Tracker</a></li>
+        <li><a href="/">Log Out</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="main-content">
+    <div class="content-box">
+
+      <!-- Self Diagnosis Section -->
+      <div class="self-diagnosis">
+        <h2>Check Your Symptoms</h2>
+        <p>Select the symptoms you’re experiencing. This is a gentle guide to help you better understand what your body may be telling you. 💖</p>
+
+        <form id="self-diagnosis-form" class="horizontal-form">
+          <div class="form-group">
+            <label><input type="checkbox" name="symptoms" value="Missed periods, irregular periods, or very light periods"> Irregular or missed periods</label>
+            <label><input type="checkbox" name="symptoms" value="Ovaries that are large or have many cysts"> Enlarged ovaries or multiple cysts</label>
+            <label><input type="checkbox" name="symptoms" value="Excess body hair, including the chest, stomach, and back (hirsutism)"> Excess facial/body hair (chest, stomach, back)</label>
+            <label><input type="checkbox" name="symptoms" value="Weight gain, especially around the belly (abdomen)"> Weight gain around your belly</label>
+            <label><input type="checkbox" name="symptoms" value="Acne or oily skin"> Persistent acne or oily skin</label>
+            <label><input type="checkbox" name="symptoms" value="Male-pattern baldness or thinning hair"> Thinning hair or hair loss</label>
+            <label><input type="checkbox" name="symptoms" value="Infertility"> Difficulty conceiving</label>
+            <label><input type="checkbox" name="symptoms" value="Small pieces of excess skin on the neck or armpits (skin tags)"> Skin tags (neck or armpits)</label>
+            <label><input type="checkbox" name="symptoms" value="Dark or thick skin patches on the back of the neck, in the armpits, and under the breasts"> Dark or thick patches of skin</label>
+          </div>
+          <div class="form-group">
+            <button type="button" id="submit-btn">Check My Results</button>
+          </div>
+        </form>
+
+        <div id="diagnosis-results" class="diagnosis-results"></div>
+      </div>
+
+      <!-- Sonography Upload Section -->
+      <div class="sonography-upload">
+        <h2>Upload Your Sonography Report (Optional)</h2>
+        <p>For a more accurate analysis, you can upload your sonography report. We'll use AI to help you understand your results better.</p>
+
+        <div class="upload-section">
+          <input type="file" id="sonography-file" accept=".jpg,.jpeg,.png">
+          <button type="button" id="upload-submit-btn">Upload & Analyze</button>
+        </div>
+        <div class="upload-image">
+          <img src="images/Awareness Quotes To Inspire You To Be Mindful.jpg" alt="Take a Quiz">
+        </div>
+        <div id="sonography-results" class="sonography-results"></div>
+      </div>
+    
+    </div>
+  </div>
+  <script src="script1.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <script>
+    // Self Diagnosis Logic
+    document.getElementById('submit-btn').addEventListener('click', function () {
+      let selectedSymptoms = [];
+      const checkboxes = document.querySelectorAll('input[name="symptoms"]:checked');
+      checkboxes.forEach(checkbox => selectedSymptoms.push(checkbox.value));
+
+      let diagnosisResult = "";
+
+      if (selectedSymptoms.length > 0) {
+        const missedPeriods = selectedSymptoms.includes("Missed periods, irregular periods, or very light periods");
+        const acneOrOilySkin = selectedSymptoms.includes("Acne or oily skin");
+        const largeOvaries = selectedSymptoms.includes("Ovaries that are large or have many cysts");
+        const baldness = selectedSymptoms.includes("Male-pattern baldness or thinning hair");
+        const infertility = selectedSymptoms.includes("Infertility");
+
+        let isPCOS = false;
+
+        if (missedPeriods && acneOrOilySkin && selectedSymptoms.length === 2) {
+          isPCOS = false;
+        } else if (largeOvaries && baldness && infertility && selectedSymptoms.length >= 4) {
+          isPCOS = true;
+        } else if ((largeOvaries || baldness || infertility) && selectedSymptoms.length > 1) {
+          isPCOS = true;
+        }
+
+        diagnosisResult = isPCOS
+          ? "💡 Based on your responses, it’s possible you’re showing signs of PCOS. We encourage you to speak with a healthcare professional for further guidance. You’re not alone on this journey 💕"
+          : "🌼 Your responses don’t strongly suggest PCOS at this time. Keep taking care of yourself and listen to your body. If in doubt, it’s always okay to talk to a doctor.";
+
+        document.getElementById('diagnosis-results').innerHTML = `<h3>Diagnosis Result:</h3><p>${diagnosisResult}</p>`;
+      }
+    });
+
+    // Sonography Upload Logic
+    document.getElementById('upload-submit-btn').addEventListener('click', function () {
+      const fileInput = document.getElementById('sonography-file');
+      if (fileInput.files.length > 0) {
+        const formData = new FormData();
+        formData.append('file', fileInput.files[0]);
+
+        fetch('http://127.0.0.1:5000/upload', {
+          method: 'POST',
+          body: formData,
+          headers: { "Accept": "application/json" }
+        })
+        .then(response => {
+          if (!response.ok) return response.json().then(err => { throw new Error(err.error || "Upload failed"); });
+          return response.json();
+        })
+        .then(data => {
+          let predictionMessage = data.error
+            ? `Error: ${data.error}`
+            : (data.prediction_class == 0
+              ? "💡 The analysis shows signs that could indicate PCOS. Please consult your doctor for a detailed review."
+              : "✅ Your report does not show signs typical of PCOS. That’s a positive sign, but trust your instincts and health provider.");
+
+          document.getElementById('sonography-results').innerHTML = `<h3>Sonography Result:</h3><p>${predictionMessage}</p>`;
+
+          Toastify({
+            text: predictionMessage,
+            style: { background: "linear-gradient(to right, #00b09b, #96c93d)" },
+            duration: 8000
+          }).showToast();
+        })
+        .catch(error => {
+          showToast(`Something went wrong: ${error.message}`, "error");
+        });
+      } else {
+        showToast("Please select a file before uploading 💬", "warning");
+      }
+    });
+
+    function showToast(message, type = "success") {
+      let bgColor;
+      switch (type) {
+        case "success": bgColor = "linear-gradient(to right, #00b09b, #96c93d)"; break;
+        case "error": bgColor = "linear-gradient(to right, #ff416c, #ff4b2b)"; break;
+        case "warning": bgColor = "linear-gradient(to right, #ffa502, #ff6348)"; break;
+        default: bgColor = "linear-gradient(to right, #555, #999)";
+      }
+      Toastify({
+        text: message,
+        duration: 4000,
+        style: { background: bgColor }
+      }).showToast();
+    }
+  </script>
+  
+  <footer style="background-color: #fce4ec; text-align: center; padding: 1.2em 0; color: #880e4f; font-size: 1em; margin-top: 2em; border-top: 2px solid #f8bbd0;">
+    Made with 💖 by OvaCare Team — Keep shining!
+  </footer>
+</body>
+</html>

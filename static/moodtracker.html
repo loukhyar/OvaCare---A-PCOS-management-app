@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mood Tracker - OvaCare</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles6.css" />
+  <style>
+    #moodResult {
+      margin-top: 20px;
+      font-size: 1.2em;
+      font-weight: 500;
+      color: #2e7d32;
+      padding: 10px;
+      background-color: #e8f5e9;
+      border: 1px solid #a5d6a7;
+      border-radius: 10px;
+      display: none;
+      transition: all 0.4s ease;
+    }
+
+    /* Optional sparkle effect */
+    .sparkle {
+      animation: sparkleFade 0.8s ease-in-out;
+    }
+
+    @keyframes sparkleFade {
+      0% {
+        transform: scale(1.1);
+        opacity: 0.3;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="header-container">
+    <nav>
+      <div class="logo-text">OvaCare</div>
+      <ul>
+        <li><a href="/static/home.html">Home</a></li>
+        <li><a href="/static/about.html">About Us</a></li>
+        <li><a href="/static/SymptomChecker.html">Symptom Checker</a></li>
+        <li><a href="/static/NutritionGuide.html">Nutrition Guide</a></li>
+        <li><a href="/static/yogaplanner.html">Mind & Movement</a></li>
+        <li><a href="/static/PeriodTracker.html">Period Tracker</a></li>
+        <li><a href="/static/WellnessTips.html">Wellness Tips</a></li>
+        <li><a href="/static/moodtracker.html">Mood Tracker</a></li>
+        <li><a href="/">Log Out</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="mood-container">
+    <h1>Track Your Mood</h1>
+    <h2>How are you feeling today?</h2>
+
+    <form id="moodForm">
+      <label for="mood">Mood:</label>
+      <select id="mood" required>
+        <option value="">Select your mood</option>
+        <option value="Happy">Happy 😊</option>
+        <option value="Sad">Sad 😢</option>
+        <option value="Stressed">Stressed 😰</option>
+        <option value="Calm">Calm 😌</option>
+        <option value="Energetic">Energetic ⚡</option>
+        <option value="Grateful">Grateful 🙏</option>
+        <option value="Motivated">Motivated 💪</option>
+        <option value="Tired">Tired 😴</option>
+        <option value="Irritated">Irritated 😠</option>
+      </select>
+
+      <button type="submit">Save Mood</button>
+    </form>
+
+    <div id="moodResult"></div>
+  </main>
+
+  <script>
+   const affirmations = {
+  Happy: [
+    "🌟 You're glowing from within! Keep spreading that joy.",
+    "😊 Your happiness lights up every room.",
+    "💛 Keep smiling, it suits you perfectly!",
+    "✨ You're a sunshine soul — stay golden!",
+    "🎉 Enjoy this beautiful feeling fully, you deserve it!",
+    "🌞 Keep shining bright — your energy is contagious!",
+    "🥰 Your joy inspires those around you.",
+    "🌺 Happiness looks beautiful on you.",
+    "🌈 Enjoy every colorful moment today.",
+    "🙌 You are a source of light and love."
+  ],
+  Sad: [
+    "💖 It's okay to feel down. This moment will pass.",
+    "🌈 Even on cloudy days, the sun is still there.",
+    "🤗 Sending you a big virtual hug — you’re not alone.",
+    "💫 You are stronger than this sadness.",
+    "🕊 Take it one breath at a time. Healing is happening.",
+    "🌙 Your emotions are valid. Allow yourself to feel them.",
+    "🫂 You’ve faced hard days before. You’ll get through this too.",
+    "💌 Be gentle with your heart today.",
+    "🌼 Brighter days are coming. Hold on.",
+    "💝 You are loved, even when you don’t feel it."
+  ],
+  Stressed: [
+    "🧘 Breathe deeply. You've got this.",
+    "🌊 Let go. You’re doing the best you can.",
+    "🫶 Don’t forget to be gentle with yourself.",
+    "🌸 One step at a time. You are doing enough.",
+    "☁ Take a pause — your mind deserves peace too.",
+    "💆‍♀️ Stress is temporary. You are steady.",
+    "📦 Release what you can’t control.",
+    "🫧 Let each breath bring clarity.",
+    "🌱 Choose peace over pressure.",
+    "🔑 You hold the key to your calm."
+  ],
+  Calm: [
+    "🌿 Your peace is powerful.",
+    "💗 Hold on to this stillness. It's beautiful.",
+    "🍃 You are aligned and grounded.",
+    "🦋 This calmness is your strength.",
+    "🪷 Let this peace carry you forward today.",
+    "🌊 Your calm energy soothes others too.",
+    "🌼 Stillness is a superpower.",
+    "🧘 Let calm be your center.",
+    "🎐 Breathe in peace, breathe out tension.",
+    "🌤 Serenity looks good on you."
+  ],
+  Energetic: [
+    "⚡ Wow, you’re on fire today!",
+    "🚀 Use this energy to chase your dreams!",
+    "🌟 Keep that spark alive — you're unstoppable!",
+    "💥 Energy like yours can change the world.",
+    "🔥 Go get it, powerhouse!",
+    "🏃‍♀️ You're in your element — flow with it!",
+    "🎯 Direct your energy toward what matters.",
+    "⛅ No limits, just possibilities today!",
+    "🎉 Let your energy light up the day.",
+    "💃 Dance through your day with purpose!"
+  ],
+  Tired: [
+    "😴 Rest is sacred. Be kind to your body.",
+    "🛏 Take a break. You deserve it.",
+    "💤 Your strength returns with rest.",
+    "🌙 Sleep well. Wake up to a better tomorrow.",
+    "🕯 Even low energy is a signal — listen to it with love.",
+    "🧸 Rest is healing, not weakness.",
+    "🍵 Pause and recharge — it's okay.",
+    "🌫 Your body is asking for slowness. Honor it.",
+    "🪶 Today, softness is strength.",
+    "🕊 Quiet days are part of the journey too."
+  ],
+  Irritated: [
+    "🌸 Take a deep breath. You are more than this moment.",
+    "🌤 Let the anger pass like a cloud in the sky.",
+    "💗 You are in control of your peace.",
+    "🌼 Pause. Reset. You’ve got this.",
+    "🫧 Let go of what doesn’t serve your calm.",
+    "🧘‍♀️ Choose peace — even when it’s hard.",
+    "💭 Your mind needs space to rest.",
+    "🧊 Cool down, then come back stronger.",
+    "🛑 Frustration is a visitor, not a resident.",
+    "🌺 Be kind to yourself in this storm."
+  ],
+  Grateful: [
+    "🙏 Gratitude brings more to be thankful for.",
+    "🌻 You are noticing the good — that’s powerful.",
+    "💖 Thankfulness brings peace.",
+    "🌈 A heart full of gratitude creates a joyful life.",
+    "✨ Every little thing you appreciate grows in value.",
+    "📝 Write down three things you're grateful for today.",
+    "🌟 You’re attracting blessings with that mindset.",
+    "🎁 Life is a gift — unwrap it with joy.",
+    "🫶 Gratitude shifts your whole perspective.",
+    "🌼 Your thankful heart is beautiful."
+  ],
+  Motivated: [
+    "🏁 You're closer than you think — keep pushing!",
+    "💪 Discipline is doing it even when it's tough. You're doing it!",
+    "🚀 Nothing can stop a determined mind.",
+    "🔥 Stay hungry. Stay driven.",
+    "🎯 One step at a time — you're building your dream.",
+    "⏳ Progress is quiet, but powerful.",
+    "📈 Every small effort adds up — keep going.",
+    "🧠 Your mindset is your greatest tool.",
+    "🛤 You’re on the right track — trust the process.",
+    "🌄 Keep your eyes on your 'why'."
+  ]
+};
+
+
+    document.getElementById('moodForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const mood = document.getElementById('mood').value;
+      const result = document.getElementById('moodResult');
+
+      if (mood && affirmations[mood]) {
+        const randomAffirmation = affirmations[mood][Math.floor(Math.random() * affirmations[mood].length)];
+
+        // Animate and display result
+        result.classList.remove('sparkle');
+        void result.offsetWidth;
+        result.classList.add('sparkle');
+
+        result.textContent = randomAffirmation;
+        result.style.display = 'block';
+      } else {
+        result.style.display = 'none';
+        alert("Please select a mood before saving.");
+      }
+    });
+  </script>
+
+  <footer style="background-color: #fce4ec; text-align: center; padding: 1.2em 0; color: #880e4f; font-size: 1em; border-top: 2px solid #f8bbd0; position: fixed; bottom: 0; left: 0; width: 100%; z-index: 999;">
+    Made with 💖 by OvaCare Team — Keep shining!
+  </footer>
+</body>
+</html>

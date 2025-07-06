@@ -1,0 +1,304 @@
+/* Global Styles */
+body {
+  background: linear-gradient(to right, #ffb6c1, #e84393);
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.header-container {
+  background-color: rgba(255, 255, 255, 0);
+  padding: 10px 20px;
+  position: relative;
+  z-index: 1000;
+  border-bottom: 1px solid #000; /* Maintain border style */
+}
+
+.header-container nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  max-width: 80px;
+  height: auto;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+nav ul li {
+  margin: 0 10px;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #000000;
+  font-weight: bold;
+}
+
+/* Modal Styles */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 500px; /* Adjust max-width for better display */
+}
+
+.modal-content h2 {
+  text-align: center;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Register and Login Sections */
+.register-section, .login-section {
+  background-color: #ffffffcc;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  margin: 50px auto;
+  max-width: 400px;
+  text-align: center;
+  transform: translateY(-5%);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.register-section:hover, .login-section:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.register-section h1, .login-section h1 {
+  font-size: 2em;
+  color: #060606;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.form-group input {
+  width: 80%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+button {
+  background-color: #e84393;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+}
+
+button:hover {
+  background-color: #d32f7a;
+}
+
+.login-section p {
+  margin-top: 10px;
+}
+
+.login-section p a {
+  color: #e84393;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.login-section p a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive Styles */
+@media (max-width: 1200px) {
+  .register-section, .login-section {
+    max-width: 350px; /* Adjust width for medium screens */
+  }
+
+  .form-group input {
+    width: 90%; /* Adjust width for input fields */
+  }
+
+  .modal-content {
+    max-width: 90%; /* Adjust max-width for better display on smaller screens */
+  }
+
+  .header-container nav {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  nav ul {
+    flex-direction: column;
+    padding: 0;
+  }
+
+  nav ul li {
+    margin: 5px 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .register-section, .login-section {
+    max-width: 300px; /* Adjust width for smaller screens */
+    padding: 15px;
+    margin: 30px auto;
+  }
+
+  .register-section h1, .login-section h1 {
+    font-size: 1.8em; /* Adjust font size */
+  }
+
+  .form-group input {
+    width: 100%; /* Full width for input fields */
+  }
+
+  .modal-content {
+    max-width: 95%; /* Adjust max-width for very small screens */
+  }
+
+  .header-container nav {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  nav ul {
+    flex-direction: column;
+    padding: 0;
+  }
+
+  nav ul li {
+    margin: 10px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .register-section, .login-section {
+    max-width: 250px; /* Adjust width for very small screens */
+    padding: 10px;
+    margin: 20px auto;
+  }
+
+  .register-section h1, .login-section h1 {
+    font-size: 1.5em; /* Adjust font size */
+  }
+
+  .form-group input {
+    width: 100%; /* Full width for input fields */
+    padding: 8px;
+  }
+
+  button {
+    padding: 8px 16px; /* Adjust padding */
+    font-size: 0.9em; /* Adjust font size */
+  }
+
+  .modal-content {
+    max-width: 100%; /* Full width for very small screens */
+    padding: 15px;
+  }
+  .modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    width: 300px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    text-align: center;
+  }
+  
+  .modal-content {
+    position: relative;
+  }
+  
+  .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  /* Toast Notification Styles */
+#toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.toast {
+  padding: 15px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  color: white;
+  opacity: 1;
+  animation: fadeOut 4s ease-in-out forwards;
+}
+
+.toast.success {
+  background-color: #28a745;
+}
+
+.toast.error {
+  background-color: #dc3545;
+}
+
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+  
+}

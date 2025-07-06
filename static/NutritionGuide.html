@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Diet Planner - OvaCare</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cookie&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles3.css" />
+</head>
+<body>
+  <header class="header-container">
+    <nav>
+      <div class="logo-text">OvaCare</div>
+      <ul>
+        <li><a href="/static/home.html">Home</a></li>
+        <li><a href="/static/about.html">About Us</a></li>
+        <li><a href="/static/SymptomChecker.html">Symptom Checker</a></li>
+        <li><a href="/static/NutritionGuide.html">Nutrition Guide</a></li>
+        <li><a href="/static/yogaplanner.html">Mind & Movement</a></li>
+        <li><a href="/static/PeriodTracker.html">Period Tracker</a></li>
+        <li><a href="/static/WellnessTips.html">Wellness Tips</a></li>
+        <li><a href="/static/moodtracker.html">Mood Tracker</a></li>
+        <li><a href="/">Log Out</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="text-container">
+        <h1 class="hero-title">Optimize Your Nutrition for PCOS Management</h1>
+        <form id="dietPlannerForm">
+          <div class="form-group">
+            <label for="mealTime">Select Meal Time:</label>
+            <select id="mealTime" name="mealTime" required>
+              <option value="">Select an option</option>
+              <option value="breakfast">Breakfast</option>
+              <option value="lunch">Lunch</option>
+              <option value="dinner">Dinner</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="dietPreference">Select Diet Preference:</label>
+            <select id="dietPreference" name="dietPreference" required>
+              <option value="">Select an option</option>
+              <option value="vegetarian">Vegetarian</option>
+              <option value="nonVegetarian">Non-Vegetarian</option>
+            </select>
+          </div>
+          <button type="submit" class="submit-button">Generate Plan</button>
+          <a href="foodtips.html" class="submit-button">Food Tips</a>
+        </form>
+      </div>
+      <img class="hero-image" src="images/PCOS-removebg-preview.png" alt="Diet Planner Illustration" />
+    </section>
+  </main>
+
+  <!-- Modal for 7-Day Plan -->
+  <div id="dietPlanModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closePopup()">&times;</span>
+      <h2 style="text-align:center;">Your 7-Day Meal Plan</h2>
+      <div id="mealPlanCards" class="card-container">
+        <!-- Flip cards will be inserted here dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <footer style="background-color: #fce4ec; text-align: center; padding: 1.2em 0; color: #880e4f; font-size: 1em; margin-top: 2em; border-top: 2px solid #f8bbd0;">
+    Made with 💖 by OvaCare Team — Keep shining!
+  </footer>
+
+  <script src="script2.js"></script>
+  <script>
+    // Close modal if clicked outside content
+    window.onclick = function(event) {
+      const modal = document.getElementById('dietPlanModal');
+      if (event.target === modal) {
+        modal.style.display = "none";
+      }
+    };
+    // Close modal function
+    function closePopup() {
+      document.getElementById('dietPlanModal').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

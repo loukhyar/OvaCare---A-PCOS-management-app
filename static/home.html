@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PCOS Management</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <header class="header-container">
+    <nav>
+      <div class="logo-text">OvaCare</div>
+      <ul>
+        <li><a href="/static/home.html">Home</a></li>
+        <li><a href="/static/about.html">About Us</a></li>
+        <li><a href="/static/SymptomChecker.html">Symptom Checker</a></li>
+        <li><a href="/static/NutritionGuide.html">Nutrition Guide</a></li>
+        <li><a href="/static/yogaplanner.html">Mind & Movement</a></li>
+        <li><a href="/static/PeriodTracker.html">Period Tracker</a></li>
+        <li><a href="/static/WellnessTips.html">Wellness Tips</a></li>
+        <li><a href="/static/moodtracker.html">Mood Tracker</a></li>
+        <li><a href="/">Log Out</a></li>
+      </ul>
+    </nav>
+  </header>
+ <main></main>
+  <!-- Greeting Section -->
+       <section class="hero-section" style="padding: 1em 1em; background: linear-gradient(to right, #ffe6f0, #f3e5f5);">
+      <div class="hero-content" style="max-width: 700px; margin: 0 auto;">
+          <p id="greeting" style="text-align:center; font-size: 1.2rem; font-weight: bold; color: #d63384; margin-top: 10px;"></p>
+
+      </div>
+    </section>
+
+
+ 
+    <section class="hero">
+      <div class="text-container">
+        <h1 class="hero-title">Flourish with Care:</h1>
+        <h2 class="hero-title">A Loving Guide to Your PCOS Journey</h2>
+        <form id="predictionForm">
+          <div class="form-group">
+            <label for="age">Age:</label>
+            <input type="number" id="age" name="age" required />
+          </div>
+          <div class="form-group">
+            <label for="bmi">BMI:</label>
+            <input type="number" id="bmi" name="bmi" step="0.1" required />
+          </div>
+          <div class="form-group">
+            <button type="submit">Predict</button>
+          </div>
+        </form>
+        <div id="predictionResult" class="result-container">
+          <!-- Result will be shown here -->
+        </div>
+      </div>
+      <img class="hero-image" src="/static/images/gyne-cancers-removebg-preview.png" alt="PCOS Illustration" />
+    </section>
+  </main>
+
+  <script src="/static/script.js"></script>
+
+  <!-- JavaScript to greet user -->
+  <script>
+    const userName = localStorage.getItem("userName");
+    const greetingEl = document.getElementById("greeting");
+    greetingEl.textContent = userName ? `Hi, ${userName}! 👋` : "Hi there!";
+  </script>
+  
+  <footer style="background-color: #fce4ec; text-align: center; padding: 1.2em 0; color: #880e4f; font-size: 1em; margin-top: 2em; border-top: 2px solid #f8bbd0;">
+    Made with 💖 by OvaCare Team — Keep shining!
+  </footer>
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Yoga Planner</title>
+  <link rel="stylesheet" href="styles5.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="header-container">
+    <nav>
+      <div class="logo-text">OvaCare</div>
+      <ul>
+        <li><a href="/static/home.html">Home</a></li>
+        <li><a href="/static/about.html">About Us</a></li>
+        <li><a href="/static/SymptomChecker.html">Symptom Checker</a></li>
+        <li><a href="/static/NutritionGuide.html">Nutrition Guide</a></li>
+        <li><a href="/static/yogaplanner.html">Mind & Movement</a></li>
+        <li><a href="/static/PeriodTracker.html">Period Tracker</a></li>
+        <li><a href="/static/WellnessTips.html">Wellness Tips</a></li>
+        <li><a href="/static/moodtracker.html">Mood Tracker</a></li>
+        <li><a href="/">Log Out</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="yoga-planner">
+      <h1 class="aa">Yoga Planner for PCOS</h1>
+      <p>Practice this sequence 3–4 times a week. Modify poses to your comfort. Combining yoga with mindfulness is especially beneficial in managing PCOS.</p>
+
+      <!-- Filter Buttons -->
+      <div class="filter-buttons">
+        <button onclick="filterCards('all')">All</button>
+        <button onclick="filterCards('relaxing')">Relaxing</button>
+        <button onclick="filterCards('strengthening')">Strengthening</button>
+        <button onclick="filterCards('hormonal')">Hormonal Balance</button>
+      </div>
+      <div class="yoga-grid">
+
+        <!-- Each pose includes data-category -->
+        <div class="yoga-pose" data-category="hormonal">
+          <div class="card-inner">
+            <div class="card-front">
+              <img src="images/cat-cow-pose.jpg" alt="Cat-Cow Pose">
+              <h3>Cat-Cow Pose</h3>
+            </div>
+            <div class="card-back">
+              <h4>Cat-Cow (Marjaryasana-Bitilasana)</h4>
+              <p>Improves spinal flexibility, massages internal organs, and helps with hormonal regulation.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="yoga-pose" data-category="relaxing">
+          <div class="card-inner">
+            <div class="card-front">
+              <img src="images/Child's Pose (Balasana).jpg" alt="Child's Pose">
+              <h3>Child's Pose</h3>
+            </div>
+            <div class="card-back">
+              <h4>Child's Pose (Balasana)</h4>
+              <p>Relieves tension in lower back and hips, promotes relaxation and stress relief.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="yoga-pose" data-category="hormonal">
+          <div class="card-inner">
+            <div class="card-front">
+              <img src="images/Butterfly Pose (Baddha Konasana).jpg" alt="Butterfly Pose">
+              <h3>Butterfly Pose</h3>
+            </div>
+            <div class="card-back">
+              <h4>Butterfly Pose (Baddha Konasana)</h4>
+              <p>Stimulates ovaries, improves circulation in the pelvic region.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="yoga-pose" data-category="strengthening">
+          <div class="card-inner">
+            <div class="card-front">
+              <img src="images/garland-pose_-squat-pose-malasana.jpg" alt="Garland Pose">
+              <h3>Garland Pose</h3>
+            </div>
+            <div class="card-back">
+              <h4>Garland Pose (Malasana)</h4>
+              <p>Increases hip mobility, aids digestion, tones lower body.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="yoga-pose" data-category="hormonal">
+          <div class="card-inner">
+            <div class="card-front">
+              <img src="images/Cobra Pose (Bhujangasana).jpg" alt="Cobra Pose">
+              <h3>Cobra Pose</h3>
+            </div>
+            <div class="card-back">
+              <h4>Cobra Pose (Bhujangasana)</h4>
+              <p>Strengthens spine, opens chest, stimulates ovarian function.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="yoga-pose" data-category="strengthening">
+          <div class="card-inner">
+            <div class="card-front">
+              <img src="images/Bridge Pose (Setu Bandhasana).jpg" alt="Bridge Pose">
+              <h3>Bridge Pose</h3>
+            </div>
+            <div class="card-back">
+              <h4>Bridge Pose (Setu Bandhasana)</h4>
+              <p>Stimulates thyroid, stretches chest, strengthens back and glutes.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="yoga-pose" data-category="relaxing">
+          <div class="card-inner">
+            <div class="card-front">
+              <img src="images/Legs-Up-the-Wall-Pose_Andrew-Clark.jpg" alt="Legs Up the Wall">
+              <h3>Legs Up the Wall</h3>
+            </div>
+            <div class="card-back">
+              <h4>Viparita Karani</h4>
+              <p>Reduces anxiety and fatigue, improves circulation and lymphatic drainage.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="yoga-pose" data-category="hormonal">
+          <div class="card-inner">
+            <div class="card-front">
+              <img src="images/Seated Forward Bend (Paschimottanasana).jpg" alt="Seated Forward Bend">
+              <h3>Seated Forward Bend</h3>
+            </div>
+            <div class="card-back">
+              <h4>Paschimottanasana</h4>
+              <p>Stimulates uterus and ovaries, calms the mind.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="yoga-pose" data-category="relaxing">
+          <div class="card-inner">
+            <div class="card-front">
+              <img src="images/Reclining Bound Angle Pose (Supta Baddha Konasana).jpg" alt="Reclining Bound Angle Pose">
+              <h3>Reclining Bound Angle</h3>
+            </div>
+            <div class="card-back">
+              <h4>Supta Baddha Konasana</h4>
+              <p>Relaxes reproductive organs and reduces cortisol levels.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="yoga-pose" data-category="hormonal">
+          <div class="card-inner">
+            <div class="card-front">
+              <img src="images/lessons-one-legged-king-pigeon-yoga-pose.jpg" alt="Pigeon Pose">
+              <h3>Pigeon Pose</h3>
+            </div>
+            <div class="card-back">
+              <h4>Pigeon Pose (Eka Pada Rajakapotasana)</h4>
+              <p>Stretches hips, improves emotional release and hormone balance.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="yoga-pose" data-category="strengthening">
+          <div class="card-inner">
+            <div class="card-front">
+              <img src="images/Spinal Twist (Ardha Matsyendrasana).jpg" alt="Spinal Twist">
+              <h3>Spinal Twist</h3>
+            </div>
+            <div class="card-back">
+              <h4>Ardha Matsyendrasana</h4>
+              <p>Improves spinal flexibility and aids digestion.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="yoga-pose" data-category="strengthening">
+          <div class="card-inner">
+            <div class="card-front">
+              <img src="images/Warrior II (Virabhadrasana II).jpg" alt="Warrior II">
+              <h3>Warrior II</h3>
+            </div>
+            <div class="card-back">
+              <h4>Warrior II (Virabhadrasana II)</h4>
+              <p>Builds strength and stamina, improves balance and confidence.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="yoga-pose" data-category="hormonal">
+          <div class="card-inner">
+            <div class="card-front">
+              <img src="images/Triangle Pose (Trikonasana).jpg" alt="Triangle Pose">
+              <h3>Triangle Pose</h3>
+            </div>
+            <div class="card-back">
+              <h4>Triangle Pose (Trikonasana)</h4>
+              <p>Opens hips and improves digestion and metabolism.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="yoga-pose" data-category="strengthening">
+          <div class="card-inner">
+            <div class="card-front">
+              <img src="images/Boat Pose (Navasana).jpg" alt="Boat Pose">
+              <h3>Boat Pose</h3>
+            </div>
+            <div class="card-back">
+              <h4>Boat Pose (Navasana)</h4>
+              <p>Strengthens core muscles, stimulates abdominal organs.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="yoga-pose" data-category="hormonal">
+          <div class="card-inner">
+            <div class="card-front">
+              <img src="images/Camel Pose (Ustrasana).jpg" alt="Camel Pose">
+              <h3>Camel Pose</h3>
+            </div>
+            <div class="card-back">
+              <h4>Camel Pose (Ustrasana)</h4>
+              <p>Improves posture, opens chest and stimulates thyroid gland.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="yoga-pose" data-category="relaxing">
+          <div class="card-inner">
+            <div class="card-front">
+              <img src="images/Happy Baby Pose (Ananda Balasana).jpg" alt="Happy Baby Pose">
+              <h3>Happy Baby</h3>
+            </div>
+            <div class="card-back">
+              <h4>Happy Baby Pose (Ananda Balasana)</h4>
+              <p>Relaxes back, opens hips, calms the nervous system.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="yoga-pose" data-category="relaxing">
+          <div class="card-inner">
+            <div class="card-front">
+              <img src="images/Corpse Pose (Savasana).jpg" alt="Corpse Pose">
+              <h3>Corpse Pose</h3>
+            </div>
+            <div class="card-back">
+              <h4>Corpse Pose (Savasana)</h4>
+              <p>Reduces stress and fatigue, enhances rest and integration.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <footer style="background-color: #fce4ec; text-align: center; padding: 1.2em 0; color: #880e4f; font-size: 1em; margin-top: 2em; border-top: 2px solid #f8bbd0;">
+    Made with 💖 by OvaCare Team — Keep shining!
+  </footer>
+
+ <script>
+    function filterCards(category) {
+      const allCards = document.querySelectorAll('.yoga-pose');
+      allCards.forEach(card => {
+        card.style.display = (category === 'all' || card.dataset.category === category) ? 'block' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>
