@@ -111,14 +111,14 @@ python train_lstm_model.py
 
 ## 📷 Screenshots/Demo
 
- ![alt text](image.png)
- ![alt text](image-1.png)
- ![alt text](image-2.png)
- ![alt text](image-3.png)
- ![alt text](image-4.png)
- ![alt text](image-5.png)
- ![alt text](image-6.png)
- ![alt text](image-7.png)
- ![alt text](image-8.png)
+![Screenshot 2025-07-06 195743](https://github.com/user-attachments/assets/819a0a4e-38e5-4f32-bd99-2a8ee54e40c3)
+![Screenshot 2025-07-06 195901](https://github.com/user-attachments/assets/9aae356f-c51c-459d-8cc1-2b3268ee1d23)
+![Screenshot 2025-07-06 195924](https://github.com/user-attachments/assets/65c11fae-3f20-433e-8cb7-322b3a4feb9e)
+![Screenshot 2025-07-06 195949](https://github.com/user-attachments/assets/0571d0f0-3b47-4632-ac69-2a4b9482f0fa)
+![Screenshot 2025-07-06 200016](https://github.com/user-attachments/assets/ffd9d370-7899-42f0-a2f5-dc572ee00e06)
+![Screenshot 2025-07-06 200038](https://github.com/user-attachments/assets/ea43f040-b89e-4404-98f1-7b81ad61a4f3)
+![Screenshot 2025-07-06 200059](https://github.com/user-attachments/assets/f9facbe2-0f93-48cb-972e-cf6346834757)
+![Screenshot 2025-07-06 200110](https://github.com/user-attachments/assets/253f5c9f-80d3-4242-afd1-7ea212ac634e)
+![Screenshot 2025-07-06 200127](https://github.com/user-attachments/assets/57a2f87d-af62-49eb-b461-5c2c13382ec7)
 
 ---
