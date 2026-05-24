@@ -1,0 +1,74 @@
+# =========================
+# Environment files
+# =========================
+.env
+!.env.example
+
+# =========================
+# Sensitive credentials
+# =========================
+firebase-service-account.json
+
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# Virtual environments
+venv/
+env/
+myenv/
+.venv/
+
+# =========================
+# Local runtime/generated files
+# =========================
+instance/
+uploads/
+*.db
+*.sqlite3
+flask_session/
+
+# Logs
+*.log
+logs/
+
+# =========================
+# React / Node
+# =========================
+node_modules/
+build/
+dist/
+coverage/
+.npm/
+.eslintcache
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# =========================
+# ML temporary artifacts
+# =========================
+checkpoints/
+*.ckpt
+saved_model/
+
+# =========================
+# IDE / Editor
+# =========================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db
