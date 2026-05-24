@@ -10,9 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "flatpickr": "^4.6.13",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
-    "react-router-dom": "^7.15.1"
+    "react-flatpickr": "^4.0.11",
+    "react-router-dom": "^7.15.1",
+    "recharts": "^3.8.1"
   },
   "devDependencies": {
     "@babel/core": "^7.29.0",
