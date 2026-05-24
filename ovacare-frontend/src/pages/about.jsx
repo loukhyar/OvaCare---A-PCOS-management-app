@@ -1,30 +1,31 @@
-import "../styles/styles7.css";
+import "../styles/styles.css";
 import img1 from "../assets/about1.jpg";
 import img2 from "../assets/about2.jpg";
 import { Link } from "react-router-dom";
 
-
 function About() {
   return (
-    <>
-      <header className="header-container">
-        <nav>
-          <div className="logo-text">OvaCare</div>
-          <ul>
-<li><Link to="/">Home</Link></li>
-<li><Link to="/about">About</Link></li>
-            <li>Symptom Checker</li>
-            <li>Nutrition Guide</li>
-            <li>Mind & Movement</li>
-            <li>Period Tracker</li>
-            <li>Wellness Tips</li>
-            <li>Mood Tracker</li>
-            <li>Log Out</li>
-          </ul>
-        </nav>
-      </header>
+    <div className="dashboard">
 
-      <main>
+      {/* Sidebar */}
+      <aside className="sidebar">
+        <h2 className="logo">OvaCare</h2>
+        <ul>
+          <li><Link to="/">Home</Link></li>
+          <li><Link to="/about">About</Link></li>
+          <li>Symptom Checker</li>
+          <li>Nutrition Guide</li>
+          <li>Mind & Movement</li>
+          <li>Period Tracker</li>
+          <li>Wellness Tips</li>
+          <li>Mood Tracker</li>
+          <li>Log Out</li>
+        </ul>
+      </aside>
+
+      {/* Main Content */}
+      <main className="main-content">
+
         {/* Hero */}
         <section className="hero-section section-with-image">
           <div className="hero-content">
@@ -66,7 +67,11 @@ function About() {
         <section className="section-with-image">
           <h2>Why We Exist</h2>
 
-          <img className="section-img" src={"https://cdn-icons-png.flaticon.com/512/3940/3940403.png"} alt="Support" />
+          <img
+            className="section-img"
+            src="https://cdn-icons-png.flaticon.com/512/3940/3940403.png"
+            alt="Support"
+          />
 
           <p>
             PCOS isn't just a medical diagnosis—it’s a personal journey...
@@ -94,12 +99,9 @@ function About() {
             At OvaCare, we envision a world where women with PCOS are supported...
           </p>
         </section>
-      </main>
 
-      <footer className="footer">
-        Made with ❤️ by the OvaCare Team — Because your health deserves care.
-      </footer>
-    </>
+      </main>
+    </div>
   );
 }
 
