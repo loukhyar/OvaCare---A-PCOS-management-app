@@ -14,118 +14,149 @@ from google.auth.transport import requests
 from openai import OpenAI
 import json
 
-# Load env
+# ================= LOAD ENV ================= #
 load_dotenv()
 
-# OpenAI
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# ================= OPENAI ================= #
+api_key = os.getenv("OPENAI_API_KEY")
 
-# Flask
-app = Flask(__name__, static_folder='static')
+if not api_key:
+    raise ValueError("❌ OPENAI_API_KEY not found in .env")
+
+client = OpenAI(api_key=api_key)
+
+# ================= FLASK ================= #
+app = Flask(__name__)
 CORS(app)
-app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 
-# MongoDB
+# ================= MONGO ================= #
 mongo_uri = os.getenv("MONGO_URI")
 client_db = MongoClient(mongo_uri)
 db = client_db["pcos_db"]
 users_collection = db["users"]
 periods_collection = db["periods"]
 
-# Upload config
+# ================= FILE UPLOAD ================= #
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png'}
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
-# Models
-cycle_model = load_model("model/lstm_period_predictor.h5")
-sonography_model = load_model("model (2).h5")
-scaler = joblib.load("model/scaler.save")
-
-GOOGLE_CLIENT_ID = "851699343467-9a66uak9d637kurdbee67i6q6altiu0s.apps.googleusercontent.com"
-class_labels = {0: "infected", 1: "non_infected"}
-
-# ---------------- UTIL ---------------- #
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# ---------------- ROUTES ---------------- #
+# ================= MODELS ================= #
+cycle_model = load_model("model/lstm_period_predictor.h5")
+sonography_model = load_model("model (2).h5")
+scaler = joblib.load("model/scaler.save")
 
+GOOGLE_CLIENT_ID = "YOUR_GOOGLE_CLIENT_ID"
+class_labels = {0: "infected", 1: "non_infected"}
+
+# ================= ROUTES ================= #
+
+# 🔮 PERIOD PREDICTION
 @app.route("/predict", methods=["POST"])
 def predict():
-    dates = request.json.get("dates", [])
-    if len(dates) < 4:
-        return jsonify({"error": "Enter at least 4 dates"}), 400
+    try:
+        dates = request.json.get("dates", [])
 
-    parsed = sorted(datetime.strptime(d, "%Y-%m-%d") for d in dates)
-    cycles = [(parsed[i+1] - parsed[i]).days for i in range(len(parsed)-1)]
+        if len(dates) < 4:
+            return jsonify({"error": "Enter at least 4 dates"}), 400
 
-    input_data = np.array(cycles[-3:]).reshape(-1, 1)
-    input_scaled = scaler.transform(input_data).reshape(1, 3, 1)
+        parsed = sorted(datetime.strptime(d, "%Y-%m-%d") for d in dates)
+        cycles = [(parsed[i+1] - parsed[i]).days for i in range(len(parsed)-1)]
 
-    pred = cycle_model.predict(input_scaled)
-    cycle_len = int(round(scaler.inverse_transform(pred)[0][0]))
+        input_data = np.array(cycles[-3:]).reshape(-1, 1)
+        input_scaled = scaler.transform(input_data).reshape(1, 3, 1)
 
-    next_date = parsed[-1] + timedelta(days=cycle_len)
+        pred = cycle_model.predict(input_scaled)
+        cycle_len = int(round(scaler.inverse_transform(pred)[0][0]))
 
-    return jsonify({
-        "predicted_date": next_date.strftime("%Y-%m-%d"),
-        "cycle_length": cycle_len
-    })
+        next_date = parsed[-1] + timedelta(days=cycle_len)
 
-@app.route("/verify-token", methods=["POST"])
-def verify_token():
-    token = request.json.get("token")
-
-    id_info = id_token.verify_oauth2_token(token, requests.Request(), GOOGLE_CLIENT_ID)
-
-    email = id_info["email"]
-    name = id_info["name"]
-
-    if not users_collection.find_one({"email": email}):
-        users_collection.insert_one({
-            "email": email,
-            "name": name
+        return jsonify({
+            "predicted_date": next_date.strftime("%Y-%m-%d"),
+            "cycle_length": cycle_len
         })
 
-    return jsonify({"email": email, "name": name})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
+
+# 🔐 GOOGLE LOGIN
+@app.route("/verify-token", methods=["POST"])
+def verify_token():
+    try:
+        token = request.json.get("token")
+
+        id_info = id_token.verify_oauth2_token(
+            token, requests.Request(), GOOGLE_CLIENT_ID
+        )
+
+        email = id_info["email"]
+        name = id_info["name"]
+
+        if not users_collection.find_one({"email": email}):
+            users_collection.insert_one({
+                "email": email,
+                "name": name
+            })
+
+        return jsonify({"email": email, "name": name})
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+# 🧠 SONOGRAPHY
 @app.route("/upload", methods=["POST"])
 def upload_image():
-    file = request.files["file"]
+    try:
+        if "file" not in request.files:
+            return jsonify({"error": "No file uploaded"}), 400
 
-    filename = secure_filename(file.filename)
-    path = os.path.join(UPLOAD_FOLDER, filename)
-    file.save(path)
+        file = request.files["file"]
 
-    img = cv2.imread(path)
-    img = cv2.resize(img, (224, 224)) / 255.0
-    img = img.reshape(1, 224, 224, 3)
+        if file.filename == "":
+            return jsonify({"error": "Empty filename"}), 400
 
-    pred = sonography_model.predict(img)
-    cls = int(np.argmax(pred))
+        if not allowed_file(file.filename):
+            return jsonify({"error": "Invalid file type"}), 400
 
-    return jsonify({
-        "label": class_labels[cls],
-        "probability": float(pred[0][cls])
-    })
+        filename = secure_filename(file.filename)
+        path = os.path.join(UPLOAD_FOLDER, filename)
+        file.save(path)
 
-# ---------------- AI DIET ROUTE ---------------- #
+        img = cv2.imread(path)
+        img = cv2.resize(img, (224, 224)) / 255.0
+        img = img.reshape(1, 224, 224, 3)
 
+        pred = sonography_model.predict(img)
+        cls = int(np.argmax(pred))
+
+        return jsonify({
+            "label": class_labels[cls],
+            "probability": float(pred[0][cls])
+        })
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+# 🤖 AI DIET (MAIN FEATURE)
 @app.route("/generate-diet", methods=["POST"])
 def generate_diet():
-    data = request.json
-    meal = data.get("meal")
-    diet = data.get("diet")
-    age = data.get("age")
-    goal = data.get("goal")
-
-    if not meal or not diet or not age or not goal:
-        return jsonify({"error": "Missing inputs"}), 400
-
     try:
+        data = request.json
+
+        meal = data.get("meal")
+        diet = data.get("diet")
+        age = data.get("age")
+        goal = data.get("goal")
+
+        if not meal or not diet or not age or not goal:
+            return jsonify({"error": "Missing inputs"}), 400
+
         prompt = f"""
 Create a 7-day PCOS-friendly {diet} diet plan for {meal}.
 
@@ -148,10 +179,6 @@ Format:
     {{
       "day": "Day 1",
       "meal": "Oats with fruits"
-    }},
-    {{
-      "day": "Day 2",
-      "meal": "Idli with sambar"
     }}
   ]
 }}
@@ -159,36 +186,25 @@ Format:
 
         response = client.chat.completions.create(
             model="gpt-4o-mini",
-            messages=[{"role": "user", "content": prompt}]
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.7
         )
 
         text = response.choices[0].message.content.strip()
 
-        # 🔥 Fix markdown JSON issue
+        # 🔥 Clean markdown if present
         if text.startswith("```"):
             text = text.replace("```json", "").replace("```", "").strip()
 
-        try:
-            parsed = json.loads(text)
-        except:
-            return jsonify({"error": "AI response formatting failed"}), 500
+        # 🔥 Parse JSON safely
+        parsed = json.loads(text)
 
         return jsonify(parsed)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# ---------------- STATIC ---------------- #
 
-@app.route('/')
-def serve_login():
-    return send_from_directory('static', 'index.html')
-
-@app.route('/home')
-def serve_home():
-    return send_from_directory('static', 'home.html')
-
-# ---------------- RUN ---------------- #
-
+# ================= RUN ================= #
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
