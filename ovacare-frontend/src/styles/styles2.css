@@ -1,0 +1,230 @@
+/* Global styles for the home page */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #ffe6f0;
+  color: #2c2c2c;
+  animation: fadeIn 1s ease-in-out;
+}
+
+/* Updated Header Styling */
+.header-container {
+  background-color: #fce4ec;
+  padding: 15px 25px;
+  border-bottom: 1px solid #e91e63;
+  position: relative;
+  z-index: 1000;
+}
+
+.header-container nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Logo Text */
+.logo-text {
+  font-family: 'Pacifico', cursive;
+  font-size: 2.5em;
+  color: #c2185b;
+  font-weight: bold;
+  animation: fadeInText 2s ease-out forwards;
+}
+
+/* Nav Menu */
+nav ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 0;
+    margin: 0;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #880e4f;
+    font-weight: 600;
+    padding: 8px 12px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+nav ul li a:hover {
+    background-color: #f48fb1;
+    color: white;
+}
+
+
+
+/* Main Content Box Styles */
+.content-box {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  background-color: #fbeff5;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 6px 20px rgba(194, 24, 91, 0.2);
+  width: 100%;
+  max-width: 1200px;
+  margin: 40px auto;
+  opacity: 0;
+  animation: fadeIn 1s ease-in-out 1s forwards;
+}
+
+.self-diagnosis,
+.sonography-upload {
+  flex: 1;
+  padding: 20px;
+  background-color: #fff0f5;
+  border-radius: 15px;
+  border: 1px solid #c2185b;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  opacity: 0;
+  animation: fadeIn 1s ease-in-out 1.5s forwards;
+}
+
+/* Results Section */
+.sonography-results {
+  margin-top: 20px;
+  padding: 20px;
+  border: 2px solid #b2dfdb;
+  border-radius: 10px;
+  background-color: #e6ffe6;
+  display: none;
+  opacity: 0;
+  animation: fadeIn 1s ease-in-out 2s forwards;
+}
+
+.sonography-results h3 {
+  font-size: 1.3em;
+  color: #00796b;
+}
+
+.sonography-results p {
+  font-size: 1.1em;
+  color: #333;
+}
+
+/* Button Hover Animations */
+.upload-section button,
+.form-group button {
+  font-size: 1em;
+  padding: 10px 20px;
+  background-color: #c2185b;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.upload-section button:hover,
+.form-group button:hover {
+  background-color: #a3154f;
+  transform: scale(1.05);
+}
+
+/* Hover effect for images */
+.upload-image img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  margin-top: 10px;
+  transition: transform 0.3s ease;
+}
+
+.upload-image img:hover {
+  transform: scale(1.05);
+}
+
+/* Form Styling */
+.horizontal-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+form.horizontal-form .form-group label,
+.symptom-question {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 500;
+  color: #4a4a4a;
+}
+
+.symptom-question input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+/* Animations */
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInText {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .header-container nav {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  nav ul {
+    flex-direction: column;
+  }
+
+  .content-box {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .self-diagnosis,
+  .sonography-upload {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .upload-section button,
+  .form-group button {
+    width: 100%;
+  }
+
+  .logo-text {
+    font-size: 2em;
+  }
+}
