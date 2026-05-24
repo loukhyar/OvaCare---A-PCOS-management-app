@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify
 import os
 import numpy as np
 import cv2
@@ -11,19 +11,20 @@ from datetime import datetime, timedelta
 import joblib
 from google.oauth2 import id_token
 from google.auth.transport import requests
-from openai import OpenAI
+import google.generativeai as genai  # ✅ Gemini
 import json
+import re
 
 # ================= LOAD ENV ================= #
 load_dotenv()
 
-# ================= OPENAI ================= #
-api_key = os.getenv("OPENAI_API_KEY")
-
+# ================= GEMINI ================= #
+api_key = os.getenv("GEMINI_API_KEY")
 if not api_key:
-    raise ValueError("❌ OPENAI_API_KEY not found in .env")
+    raise ValueError("❌ GEMINI_API_KEY not found in .env")
 
-client = OpenAI(api_key=api_key)
+genai.configure(api_key=api_key)
+gemini = genai.GenerativeModel("gemini-2.5-flash")  # ✅ Free tier model
 
 # ================= FLASK ================= #
 app = Flask(__name__)
@@ -158,22 +159,21 @@ def generate_diet():
             return jsonify({"error": "Missing inputs"}), 400
 
         prompt = f"""
-Create a 7-day PCOS-friendly {diet} diet plan for {meal}.
+Generate ONLY valid JSON. No explanation, no markdown, no backticks.
+
+7-day PCOS-friendly {diet} diet plan for {meal}.
 
 User:
 Age: {age}
 Goal: {goal}
 
-Requirements:
+Rules:
 - Indian foods
 - Low sugar
 - PCOS-friendly
 - Balanced nutrients
 
-Return ONLY valid JSON.
-No explanation. No markdown.
-
-Format:
+Return ONLY this JSON format:
 {{
   "days": [
     {{
@@ -184,20 +184,23 @@ Format:
 }}
 """
 
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.7
-        )
+        # ✅ Gemini API call
+        response = gemini.generate_content(prompt)
+        text = response.text.strip()
+        print("AI RAW RESPONSE:\n", text)
 
-        text = response.choices[0].message.content.strip()
-
-        # 🔥 Clean markdown if present
+        # 🔥 Remove markdown if present
         if text.startswith("```"):
             text = text.replace("```json", "").replace("```", "").strip()
 
-        # 🔥 Parse JSON safely
-        parsed = json.loads(text)
+        # 🔥 Extract JSON safely
+        match = re.search(r'\{.*\}', text, re.DOTALL)
+
+        if not match:
+            return jsonify({"error": "Invalid AI response"}), 500
+
+        clean_json = match.group()
+        parsed = json.loads(clean_json)
 
         return jsonify(parsed)
 
