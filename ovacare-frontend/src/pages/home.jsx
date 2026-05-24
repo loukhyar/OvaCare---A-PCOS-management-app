@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "../styles/styles.css";
 import heroImg from "../assets/pcos.png";
-import { Link } from "react-router-dom";
+import Layout from "../components/Layout";
 
 function Home() {
   const [greeting, setGreeting] = useState("");
@@ -13,74 +13,32 @@ function Home() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    const age = e.target.age.value;
-    const bmi = e.target.bmi.value;
-
-    console.log(age, bmi);
+    console.log(e.target.age.value, e.target.bmi.value);
   };
 
   return (
-    <div className="dashboard">
+    <Layout>
 
-      {/* Sidebar */}
-      <aside className="sidebar">
-        <h2 className="logo">OvaCare</h2>
-        <ul>
-          <li><Link to="/">Home</Link></li>
-          <li><Link to="/about">About</Link></li>
-          <li>Symptom Checker</li>
-          <li>Nutrition Guide</li>
-          <li>Mind & Movement</li>
-          <li>Period Tracker</li>
-          <li>Wellness Tips</li>
-          <li>Mood Tracker</li>
-          <li>Log Out</li>
-        </ul>
-      </aside>
+      <section className="hero-section">
+        <p>{greeting}</p>
+      </section>
 
-      {/* Main Content */}
-      <main className="main-content">
+      <section className="hero">
+        <div className="text-container">
+          <h1>Flourish with Care:</h1>
+          <h2>A Loving Guide to Your PCOS Journey</h2>
 
-        {/* Greeting */}
-        <section className="hero-section">
-          <p>{greeting}</p>
-        </section>
+          <form onSubmit={handleSubmit}>
+            <input type="number" name="age" placeholder="Age" required />
+            <input type="number" name="bmi" placeholder="BMI" required />
+            <button type="submit">Predict</button>
+          </form>
+        </div>
 
-        {/* Hero Section */}
-        <section className="hero">
-          <div className="text-container">
-            <h1 className="hero-title">Flourish with Care:</h1>
-            <h2 className="hero-title">
-              A Loving Guide to Your PCOS Journey
-            </h2>
+        <img src={heroImg} alt="PCOS" />
+      </section>
 
-            <form onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label>Age:</label>
-                <input type="number" name="age" required />
-              </div>
-
-              <div className="form-group">
-                <label>BMI:</label>
-                <input type="number" name="bmi" step="0.1" required />
-              </div>
-
-              <div className="form-group">
-                <button type="submit">Predict</button>
-              </div>
-            </form>
-
-            <div className="result-container">
-              {/* result will come here */}
-            </div>
-          </div>
-
-          <img className="hero-image" src={heroImg} alt="PCOS" />
-        </section>
-
-      </main>
-    </div>
+    </Layout>
   );
 }
 
