@@ -369,3 +369,35 @@ main {
     padding: 20px 15px;
   }
 }
+.dashboard {
+  display: flex;
+  height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 220px;
+  background: #fce4ec;
+  padding: 20px;
+}
+
+.sidebar .logo {
+  margin-bottom: 20px;
+  color: #c2185b;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  margin: 10px 0;
+}
+
+/* Main content */
+.main-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
