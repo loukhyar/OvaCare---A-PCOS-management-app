@@ -66,6 +66,14 @@ function Layout({ children }) {
                 Mood Tracker
               </Link>
             </li>
+             <li>
+              <Link
+                to="/mood"
+                className="px-4 py-2 rounded-full hover:bg-pink-300 hover:text-white transition"
+              >
+                Logout
+              </Link>
+            </li>
           </ul>
         </nav>
       </header>
