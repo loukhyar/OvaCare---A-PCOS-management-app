@@ -74,7 +74,7 @@ function SymptomChecker() {
       const data = await res.json();
 
       const message =
-        data.prediction_class === 0
+        data.label === "infected"
           ? "💡 Possible PCOS detected. Consult doctor."
           : "✅ No PCOS signs detected.";
 
@@ -86,53 +86,73 @@ function SymptomChecker() {
 
   return (
     <Layout>
+      <div className="content-box">
 
-      {/* Diagnosis */}
-      <section>
-        <h2>Check Your Symptoms</h2>
-        <p>Select symptoms you're experiencing 💖</p>
+        {/* LEFT */}
+        <div className="left-panel">
+          <section className="self-diagnosis">
+            <h2>Check Your Symptoms</h2>
+            <p>Select symptoms you're experiencing 💖</p>
 
-        {symptomsList.map((symptom, index) => (
-          <label key={index}>
+            {symptomsList.map((symptom, index) => (
+              <label key={index}>
+                <input
+                  type="checkbox"
+                  onChange={() => handleCheckbox(symptom)}
+                />
+                {symptom}
+              </label>
+            ))}
+
+            <button onClick={handleDiagnosis}>
+              Check My Results
+            </button>
+
+            {diagnosis && (
+              <div className="diagnosis-results">
+                <h3>Result:</h3>
+                <p>{diagnosis}</p>
+              </div>
+            )}
+          </section>
+        </div>
+
+        {/* RIGHT */}
+        <div className="right-panel">
+          <section className="sonography-upload">
+
+            <h2>Upload Your Sonography Report</h2>
+            <p className="upload-desc">
+              For better accuracy, upload your report 💕
+            </p>
+
             <input
-              type="checkbox"
-              onChange={() => handleCheckbox(symptom)}
+              type="file"
+              onChange={(e) => setFile(e.target.files[0])}
             />
-            {symptom}
-          </label>
-        ))}
 
-        <br /><br />
+            <button onClick={handleUpload}>
+              Upload & Analyze
+            </button>
 
-        <button onClick={handleDiagnosis}>Check My Results</button>
+            {sonographyResult && (
+              <div className="sonography-results">
+                <h3>Result:</h3>
+                <p>{sonographyResult}</p>
+              </div>
+            )}
 
-        {diagnosis && (
-          <div className="diagnosis-results">
-            <h3>Result:</h3>
-            <p>{diagnosis}</p>
-          </div>
-        )}
-      </section>
+            {/* QUOTE (like your reference UI) */}
+            <div className="quote-card">
+              <span className="quote-mark">❝</span>
+              <p>Awareness precedes change.</p>
+              <small>- Robin Sharma</small>
+            </div>
 
-      {/* Upload */}
-      <section>
-        <h2>Upload Sonography</h2>
+          </section>
+        </div>
 
-        <input
-          type="file"
-          onChange={(e) => setFile(e.target.files[0])}
-        />
-
-        <button onClick={handleUpload}>Upload & Analyze</button>
-
-        {sonographyResult && (
-          <div>
-            <h3>Sonography Result:</h3>
-            <p>{sonographyResult}</p>
-          </div>
-        )}
-      </section>
-
+      </div>
     </Layout>
   );
 }

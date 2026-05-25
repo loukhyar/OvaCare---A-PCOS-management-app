@@ -60,7 +60,9 @@ function Nutritionguide() {
 
       <section className="hero">
         <div className="text-container">
-          <h1 className="hero-title">AI Nutrition Planner 🥗</h1>
+          <h1 className="hero-title">
+  AI Nutrition Planner 🥗✨
+</h1>
 
           <form onSubmit={handleSubmit}>
 

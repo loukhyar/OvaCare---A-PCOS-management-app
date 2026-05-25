@@ -30,7 +30,7 @@ function Login() {
           localStorage.setItem("userEmail", data.email);
           localStorage.setItem("userName", data.name);
 
-          window.location.href = "/"; // go to home
+          window.location.href = "/home"; // go to home
         } else {
           setMessage(`❌ Login failed`);
         }
@@ -45,15 +45,13 @@ function Login() {
       <div className="login-container">
         <div className="app-name">OvaCare</div>
         <div className="tagline">
-          Empowering your cycle, your care, your choice.
+          Empowering your cycle, your care, your choice 💖
         </div>
-
-        <h1>Login with Google</h1>
 
         {/* Google Sign In */}
         <div
           id="g_id_onload"
-          data-client_id="YOUR_CLIENT_ID_HERE"
+          data-client_id="476303882358-l5r21fd2iretal5pc6qmgga8drll0r8q.apps.googleusercontent.com"
           data-context="signin"
           data-callback="handleCredentialResponse"
           data-auto_prompt="false"

@@ -11,9 +11,9 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Login />} /> {/* ✅ changed */}
+        <Route path="/home" element={<Home />} /> {/* optional */}
         <Route path="/about" element={<About />} />
-        <Route path="/login" element={<Login />} />
         <Route path="/symptoms" element={<SymptomChecker />} />
         <Route path="/diet" element={<Nutritionguide />} />
         <Route path="/yoga" element={<YogaPlanner />} />
