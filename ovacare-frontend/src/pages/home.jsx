@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import "../styles/styles.css";
 import heroImg from "../assets/pcos.png";
 import Layout from "../components/Layout";
 
@@ -13,31 +12,76 @@ function Home() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(e.target.age.value, e.target.bmi.value);
+
+    const age = e.target.age.value;
+    const bmi = e.target.bmi.value;
+
+    console.log(age, bmi);
   };
 
   return (
     <Layout>
-
-      <section className="hero-section">
-        <p>{greeting}</p>
+      {/* Greeting */}
+      <section className="max-w-6xl mx-auto mt-6 px-4">
+        <div className="bg-pink-200 rounded-2xl shadow-md py-4 text-center">
+          <p className="text-pink-900 font-semibold text-lg">
+            {greeting}
+          </p>
+        </div>
       </section>
 
-      <section className="hero">
-        <div className="text-container">
-          <h1>Flourish with Care:</h1>
-          <h2>A Loving Guide to Your PCOS Journey</h2>
+      {/* Hero */}
+      <section className="max-w-6xl mx-auto px-6 py-12 flex flex-col lg:flex-row items-center justify-between gap-12">
+        
+        {/* Left */}
+        <div className="flex-1 max-w-xl">
+          <h1 className="text-4xl md:text-5xl font-bold text-pink-700 leading-tight">
+            Flourish with Care:
+          </h1>
 
-          <form onSubmit={handleSubmit}>
-            <input type="number" name="age" placeholder="Age" required />
-            <input type="number" name="bmi" placeholder="BMI" required />
-            <button type="submit">Predict</button>
+          <h2 className="text-2xl md:text-3xl font-semibold text-purple-700 mt-4">
+            A Loving Guide to Your PCOS Journey
+          </h2>
+
+          <form
+            onSubmit={handleSubmit}
+            className="mt-10 flex flex-col gap-5"
+          >
+            <input
+              type="number"
+              name="age"
+              placeholder="Enter Age"
+              required
+              className="w-full md:w-80 px-4 py-3 rounded-xl border-2 border-pink-200 focus:outline-none focus:ring-2 focus:ring-pink-400"
+            />
+
+            <input
+              type="number"
+              name="bmi"
+              step="0.1"
+              placeholder="Enter BMI"
+              required
+              className="w-full md:w-80 px-4 py-3 rounded-xl border-2 border-pink-200 focus:outline-none focus:ring-2 focus:ring-pink-400"
+            />
+
+            <button
+              type="submit"
+              className="w-full md:w-48 bg-gradient-to-r from-pink-600 to-pink-400 text-white font-bold py-3 rounded-full shadow-lg hover:scale-105 transition duration-300"
+            >
+              Predict
+            </button>
           </form>
         </div>
 
-        <img src={heroImg} alt="PCOS" />
+        {/* Right */}
+        <div className="flex-1 flex justify-center">
+          <img
+            src={heroImg}
+            alt="PCOS"
+            className="w-full max-w-md rounded-3xl shadow-2xl hover:scale-105 transition duration-300"
+          />
+        </div>
       </section>
-
     </Layout>
   );
 }
