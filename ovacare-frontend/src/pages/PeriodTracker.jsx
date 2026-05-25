@@ -5,19 +5,19 @@ import "../styles/styles.css";
 function PeriodTracker() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDates, setSelectedDates] = useState([]);
-  const [predictedDate, setPredictedDate] = useState(null); // ✅ NEW
+  const [predictedDate, setPredictedDate] = useState(null);
   const [result, setResult] = useState("");
 
   const today = new Date();
 
-  // Month navigation
+  // 🔁 Month navigation
   const changeMonth = (offset) => {
     const newDate = new Date(currentDate);
     newDate.setMonth(newDate.getMonth() + offset);
     setCurrentDate(newDate);
   };
 
-  // Select date
+  // ✅ Select date
   const toggleDate = (dateStr) => {
     setSelectedDates((prev) =>
       prev.includes(dateStr)
@@ -26,39 +26,41 @@ function PeriodTracker() {
     );
   };
 
-  // Prediction logic
-  const handlePredict = () => {
+  // 🚀 BACKEND CALL (IMPORTANT)
+  const handlePredict = async () => {
     if (selectedDates.length < 2) {
       setResult("⚠️ Select at least 2 dates");
       return;
     }
 
-    const sorted = [...selectedDates].sort(
-      (a, b) => new Date(a) - new Date(b)
-    );
+    try {
+      const res = await fetch("http://localhost:5000/predict", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          dates: selectedDates,
+          email: localStorage.getItem("userEmail"), // 👈 send user
+        }),
+      });
 
-    let gaps = [];
-    for (let i = 1; i < sorted.length; i++) {
-      const diff =
-        (new Date(sorted[i]) - new Date(sorted[i - 1])) /
-        (1000 * 60 * 60 * 24);
-      gaps.push(diff);
+      const data = await res.json();
+
+      if (data.predicted_date) {
+        setPredictedDate(data.predicted_date);
+
+        const formatted = new Date(data.predicted_date);
+        setResult(`🌸 Next period: ${formatted.toDateString()}`);
+      } else {
+        setResult("❌ Error predicting");
+      }
+    } catch (err) {
+      setResult("❌ Server error");
     }
-
-    const avg =
-      gaps.reduce((a, b) => a + b, 0) / gaps.length;
-
-    const last = new Date(sorted[sorted.length - 1]);
-    const next = new Date(last);
-    next.setDate(last.getDate() + Math.round(avg));
-
-    const nextStr = next.toISOString().split("T")[0];
-
-    setPredictedDate(nextStr); // ✅ IMPORTANT
-    setResult(`🌸 Next period: ${next.toDateString()}`);
   };
 
-  // Generate calendar
+  // 📅 Calendar generation
   const generateCalendar = () => {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
@@ -80,7 +82,7 @@ function PeriodTracker() {
       const isSelected = selectedDates.includes(dateStr);
       const isToday =
         dateObj.toDateString() === today.toDateString();
-      const isPredicted = predictedDate === dateStr; // ✅ NEW
+      const isPredicted = predictedDate === dateStr;
 
       days.push(
         <div
@@ -111,14 +113,14 @@ function PeriodTracker() {
         <h1 className="hero-title">Predict your next Period 🌸</h1>
         <h3>Select your previous period start dates</h3>
 
-        {/* NAV */}
+        {/* 🔥 NAV */}
         <div className="calendar-nav">
           <button onClick={() => changeMonth(-1)}>←</button>
           <span>{monthYear}</span>
           <button onClick={() => changeMonth(1)}>→</button>
         </div>
 
-        {/* CALENDAR */}
+        {/* 📅 CALENDAR */}
         <div className="calendar-grid">
           {["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map((d) => (
             <div key={d} className="calendar-label">{d}</div>
@@ -126,12 +128,14 @@ function PeriodTracker() {
           {generateCalendar()}
         </div>
 
-        {/* BUTTON */}
-        <button className="predict-btn" onClick={handlePredict}>
-          Predict Next Period
-        </button>
+        {/* 🔥 BUTTON */}
+        <div style={{ textAlign: "center" }}>
+          <button className="predict-btn" onClick={handlePredict}>
+            Predict Next Period
+          </button>
+        </div>
 
-        {/* RESULT */}
+        {/* 📊 RESULT */}
         {result && <div className="result-box">{result}</div>}
 
       </div>

@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 import joblib
 from google.oauth2 import id_token
 from google.auth.transport import requests
-import google.generativeai as genai  # ✅ Gemini
+import google.generativeai as genai
 import json
 import re
 
@@ -24,7 +24,7 @@ if not api_key:
     raise ValueError("❌ GEMINI_API_KEY not found in .env")
 
 genai.configure(api_key=api_key)
-gemini = genai.GenerativeModel("gemini-2.5-flash")  # ✅ Free tier model
+gemini = genai.GenerativeModel("gemini-2.5-flash")
 
 # ================= FLASK ================= #
 app = Flask(__name__)
@@ -32,8 +32,13 @@ CORS(app)
 
 # ================= MONGO ================= #
 mongo_uri = os.getenv("MONGO_URI")
+
+if not mongo_uri:
+    raise ValueError("❌ MONGO_URI not found in .env")
+
 client_db = MongoClient(mongo_uri)
 db = client_db["pcos_db"]
+
 users_collection = db["users"]
 periods_collection = db["periods"]
 
@@ -55,29 +60,46 @@ class_labels = {0: "infected", 1: "non_infected"}
 
 # ================= ROUTES ================= #
 
-# 🔮 PERIOD PREDICTION
+# 🔮 PERIOD PREDICTION + SAVE TO MONGO
 @app.route("/predict", methods=["POST"])
 def predict():
     try:
-        dates = request.json.get("dates", [])
+        data = request.json
+        dates = data.get("dates", [])
+        email = data.get("email", "anonymous")  # optional user tracking
 
-        if len(dates) < 4:
-            return jsonify({"error": "Enter at least 4 dates"}), 400
+        if len(dates) < 2:
+            return jsonify({"error": "Enter at least 2 dates"}), 400
 
         parsed = sorted(datetime.strptime(d, "%Y-%m-%d") for d in dates)
+
         cycles = [(parsed[i+1] - parsed[i]).days for i in range(len(parsed)-1)]
 
-        input_data = np.array(cycles[-3:]).reshape(-1, 1)
-        input_scaled = scaler.transform(input_data).reshape(1, 3, 1)
+        # fallback if less data
+        if len(cycles) < 3:
+            avg_cycle = int(sum(cycles) / len(cycles))
+            next_date = parsed[-1] + timedelta(days=avg_cycle)
+        else:
+            input_data = np.array(cycles[-3:]).reshape(-1, 1)
+            input_scaled = scaler.transform(input_data).reshape(1, 3, 1)
 
-        pred = cycle_model.predict(input_scaled)
-        cycle_len = int(round(scaler.inverse_transform(pred)[0][0]))
+            pred = cycle_model.predict(input_scaled)
+            cycle_len = int(round(scaler.inverse_transform(pred)[0][0]))
 
-        next_date = parsed[-1] + timedelta(days=cycle_len)
+            next_date = parsed[-1] + timedelta(days=cycle_len)
+
+        predicted_str = next_date.strftime("%Y-%m-%d")
+
+        # ✅ SAVE TO MONGODB
+        periods_collection.insert_one({
+            "email": email,
+            "dates": dates,
+            "predicted_date": predicted_str,
+            "created_at": datetime.utcnow()
+        })
 
         return jsonify({
-            "predicted_date": next_date.strftime("%Y-%m-%d"),
-            "cycle_length": cycle_len
+            "predicted_date": predicted_str
         })
 
     except Exception as e:
@@ -144,7 +166,7 @@ def upload_image():
         return jsonify({"error": str(e)}), 500
 
 
-# 🤖 AI DIET (MAIN FEATURE)
+# 🤖 AI DIET
 @app.route("/generate-diet", methods=["POST"])
 def generate_diet():
     try:
@@ -159,21 +181,14 @@ def generate_diet():
             return jsonify({"error": "Missing inputs"}), 400
 
         prompt = f"""
-Generate ONLY valid JSON. No explanation, no markdown, no backticks.
+Generate ONLY valid JSON. No explanation.
 
 7-day PCOS-friendly {diet} diet plan for {meal}.
 
-User:
 Age: {age}
 Goal: {goal}
 
-Rules:
-- Indian foods
-- Low sugar
-- PCOS-friendly
-- Balanced nutrients
-
-Return ONLY this JSON format:
+Return JSON only:
 {{
   "days": [
     {{
@@ -184,23 +199,18 @@ Return ONLY this JSON format:
 }}
 """
 
-        # ✅ Gemini API call
         response = gemini.generate_content(prompt)
         text = response.text.strip()
-        print("AI RAW RESPONSE:\n", text)
 
-        # 🔥 Remove markdown if present
         if text.startswith("```"):
             text = text.replace("```json", "").replace("```", "").strip()
 
-        # 🔥 Extract JSON safely
         match = re.search(r'\{.*\}', text, re.DOTALL)
 
         if not match:
             return jsonify({"error": "Invalid AI response"}), 500
 
-        clean_json = match.group()
-        parsed = json.loads(clean_json)
+        parsed = json.loads(match.group())
 
         return jsonify(parsed)
 

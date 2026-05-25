@@ -15,7 +15,7 @@ function Layout({ children }) {
           <ul className="flex flex-col lg:flex-row flex-wrap gap-2 text-pink-900 font-medium">
             
             <li>
-              <Link to="/" className="px-4 py-2 rounded-full hover:bg-pink-300 hover:text-white transition">
+              <Link to="/home" className="px-4 py-2 rounded-full hover:bg-pink-300 hover:text-white transition">
                 Home
               </Link>
             </li>
@@ -47,7 +47,7 @@ function Layout({ children }) {
 
             {/* ✅ FIXED LOGOUT */}
             <li>
-              <Link to="/login" className="px-4 py-2 rounded-full hover:bg-pink-300 hover:text-white transition">
+              <Link to="/" className="px-4 py-2 rounded-full hover:bg-pink-300 hover:text-white transition">
                 Logout
               </Link>
             </li>
