@@ -230,7 +230,31 @@ Return:
         print("❌ DIET ERROR:", str(e))
         return jsonify({"error": str(e)}), 500
 
+#HOME PAGE
+# 🧮 BMI PREDICTION
+@app.route("/bmi", methods=["POST"])
+def bmi_predict():
+    try:
+        data = request.json
+        bmi = float(data.get("bmi"))
 
+        if bmi < 18.5:
+            category = "Underweight"
+        elif bmi < 25:
+            category = "Normal"
+        elif bmi < 30:
+            category = "Overweight"
+        else:
+            category = "Obese"
+
+        return jsonify({
+            "bmi": bmi,
+            "category": category
+        })
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
 # ================= RUN ================= #
 if __name__ == "__main__":
     print("🚀 Server running on http://localhost:5000")

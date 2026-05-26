@@ -4,19 +4,39 @@ import Layout from "../components/Layout";
 
 function Home() {
   const [greeting, setGreeting] = useState("");
+  const [result, setResult] = useState(""); // ✅ NEW
 
   useEffect(() => {
     const userName = localStorage.getItem("userName");
     setGreeting(userName ? `Hi, ${userName}! 👋` : "Hi there!");
   }, []);
 
-  const handleSubmit = (e) => {
+  // ✅ FIXED FUNCTION
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const age = e.target.age.value;
     const bmi = e.target.bmi.value;
 
-    console.log(age, bmi);
+    try {
+      const res = await fetch("http://localhost:5000/bmi", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ age, bmi }),
+      });
+
+      const data = await res.json();
+
+      if (data.category) {
+        setResult(`🌸 Your BMI category: ${data.category}`);
+      } else {
+        setResult("❌ Error calculating BMI");
+      }
+    } catch (err) {
+      setResult("❌ Server error");
+    }
   };
 
   return (
@@ -71,6 +91,13 @@ function Home() {
               Predict
             </button>
           </form>
+
+          {/* ✅ RESULT DISPLAY */}
+          {result && (
+            <p className="mt-6 text-lg font-semibold text-purple-700">
+              {result}
+            </p>
+          )}
         </div>
 
         {/* Right */}

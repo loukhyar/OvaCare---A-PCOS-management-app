@@ -10,6 +10,17 @@ function PeriodTracker() {
 
   const today = new Date();
 
+  // ✅ FORMAT DATE (FIXES TIMEZONE BUG)
+  const formatDate = (date) => {
+    return (
+      date.getFullYear() +
+      "-" +
+      String(date.getMonth() + 1).padStart(2, "0") +
+      "-" +
+      String(date.getDate()).padStart(2, "0")
+    );
+  };
+
   // 🔁 Month navigation
   const changeMonth = (offset) => {
     const newDate = new Date(currentDate);
@@ -26,7 +37,7 @@ function PeriodTracker() {
     );
   };
 
-  // 🚀 BACKEND CALL (IMPORTANT)
+  // 🚀 BACKEND CALL
   const handlePredict = async () => {
     if (selectedDates.length < 2) {
       setResult("⚠️ Select at least 2 dates");
@@ -41,7 +52,7 @@ function PeriodTracker() {
         },
         body: JSON.stringify({
           dates: selectedDates,
-          email: localStorage.getItem("userEmail"), // 👈 send user
+          email: localStorage.getItem("userEmail"),
         }),
       });
 
@@ -77,7 +88,7 @@ function PeriodTracker() {
 
     for (let d = 1; d <= daysInMonth; d++) {
       const dateObj = new Date(year, month, d);
-      const dateStr = dateObj.toISOString().split("T")[0];
+      const dateStr = formatDate(dateObj); // ✅ FIXED HERE
 
       const isSelected = selectedDates.includes(dateStr);
       const isToday =
@@ -113,14 +124,14 @@ function PeriodTracker() {
         <h1 className="hero-title">Predict your next Period 🌸</h1>
         <h3>Select your previous period start dates</h3>
 
-        {/* 🔥 NAV */}
+        {/* NAV */}
         <div className="calendar-nav">
           <button onClick={() => changeMonth(-1)}>←</button>
           <span>{monthYear}</span>
           <button onClick={() => changeMonth(1)}>→</button>
         </div>
 
-        {/* 📅 CALENDAR */}
+        {/* CALENDAR */}
         <div className="calendar-grid">
           {["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map((d) => (
             <div key={d} className="calendar-label">{d}</div>
@@ -128,14 +139,14 @@ function PeriodTracker() {
           {generateCalendar()}
         </div>
 
-        {/* 🔥 BUTTON */}
+        {/* BUTTON */}
         <div style={{ textAlign: "center" }}>
           <button className="predict-btn" onClick={handlePredict}>
             Predict Next Period
           </button>
         </div>
 
-        {/* 📊 RESULT */}
+        {/* RESULT */}
         {result && <div className="result-box">{result}</div>}
 
       </div>
