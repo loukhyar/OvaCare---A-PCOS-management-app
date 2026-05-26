@@ -42,6 +42,8 @@ db = client_db["pcos_db"]
 users_collection = db["users"]
 periods_collection = db["periods"]
 
+print("✅ MongoDB Connected")
+
 # ================= FILE UPLOAD ================= #
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png'}
@@ -55,18 +57,20 @@ cycle_model = load_model("model/lstm_period_predictor.h5")
 sonography_model = load_model("model (2).h5")
 scaler = joblib.load("model/scaler.save")
 
+# ✅ MUST MATCH FRONTEND
 GOOGLE_CLIENT_ID = "476303882358-l5r21fd2iretal5pc6qmgga8drll0r8q.apps.googleusercontent.com"
+
 class_labels = {0: "infected", 1: "non_infected"}
 
 # ================= ROUTES ================= #
 
-# 🔮 PERIOD PREDICTION + SAVE TO MONGO
+# 🔮 PERIOD PREDICTION + SAVE
 @app.route("/predict", methods=["POST"])
 def predict():
     try:
         data = request.json
         dates = data.get("dates", [])
-        email = data.get("email", "anonymous")  # optional user tracking
+        email = data.get("email", "anonymous")
 
         if len(dates) < 2:
             return jsonify({"error": "Enter at least 2 dates"}), 400
@@ -75,7 +79,6 @@ def predict():
 
         cycles = [(parsed[i+1] - parsed[i]).days for i in range(len(parsed)-1)]
 
-        # fallback if less data
         if len(cycles) < 3:
             avg_cycle = int(sum(cycles) / len(cycles))
             next_date = parsed[-1] + timedelta(days=avg_cycle)
@@ -90,7 +93,7 @@ def predict():
 
         predicted_str = next_date.strftime("%Y-%m-%d")
 
-        # ✅ SAVE TO MONGODB
+        # ✅ SAVE TO DB
         periods_collection.insert_one({
             "email": email,
             "dates": dates,
@@ -98,11 +101,14 @@ def predict():
             "created_at": datetime.utcnow()
         })
 
+        print("✅ Saved to Mongo:", email)
+
         return jsonify({
             "predicted_date": predicted_str
         })
 
     except Exception as e:
+        print("❌ PREDICT ERROR:", str(e))
         return jsonify({"error": str(e)}), 500
 
 
@@ -112,12 +118,17 @@ def verify_token():
     try:
         token = request.json.get("token")
 
+        if not token:
+            return jsonify({"error": "No token provided"}), 400
+
         id_info = id_token.verify_oauth2_token(
             token, requests.Request(), GOOGLE_CLIENT_ID
         )
 
         email = id_info["email"]
         name = id_info["name"]
+
+        print("✅ LOGIN SUCCESS:", email)
 
         if not users_collection.find_one({"email": email}):
             users_collection.insert_one({
@@ -128,6 +139,7 @@ def verify_token():
         return jsonify({"email": email, "name": name})
 
     except Exception as e:
+        print("❌ LOGIN ERROR:", str(e))
         return jsonify({"error": str(e)}), 400
 
 
@@ -163,6 +175,7 @@ def upload_image():
         })
 
     except Exception as e:
+        print("❌ UPLOAD ERROR:", str(e))
         return jsonify({"error": str(e)}), 500
 
 
@@ -181,14 +194,13 @@ def generate_diet():
             return jsonify({"error": "Missing inputs"}), 400
 
         prompt = f"""
-Generate ONLY valid JSON. No explanation.
+Generate ONLY valid JSON.
 
 7-day PCOS-friendly {diet} diet plan for {meal}.
-
 Age: {age}
 Goal: {goal}
 
-Return JSON only:
+Return:
 {{
   "days": [
     {{
@@ -215,9 +227,11 @@ Return JSON only:
         return jsonify(parsed)
 
     except Exception as e:
+        print("❌ DIET ERROR:", str(e))
         return jsonify({"error": str(e)}), 500
 
 
 # ================= RUN ================= #
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    print("🚀 Server running on http://localhost:5000")
+    app.run(host="0.0.0.0", port=5000, debug=True)
