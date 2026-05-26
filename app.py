@@ -21,7 +21,7 @@ load_dotenv()
 # ================= GEMINI ================= #
 api_key = os.getenv("GEMINI_API_KEY")
 if not api_key:
-    raise ValueError("❌ GEMINI_API_KEY not found in .env")
+    raise ValueError("❌ GEMINI_API_KEY not found")
 
 genai.configure(api_key=api_key)
 gemini = genai.GenerativeModel("gemini-2.5-flash")
@@ -32,15 +32,17 @@ CORS(app)
 
 # ================= MONGO ================= #
 mongo_uri = os.getenv("MONGO_URI")
-
 if not mongo_uri:
-    raise ValueError("❌ MONGO_URI not found in .env")
+    raise ValueError("❌ MONGO_URI not found")
 
 client_db = MongoClient(mongo_uri)
 db = client_db["pcos_db"]
 
 users_collection = db["users"]
 periods_collection = db["periods"]
+
+# ✅ Prevent duplicate users
+periods_collection.create_index("email", unique=True)
 
 print("✅ MongoDB Connected")
 
@@ -57,14 +59,13 @@ cycle_model = load_model("model/lstm_period_predictor.h5")
 sonography_model = load_model("model (2).h5")
 scaler = joblib.load("model/scaler.save")
 
-# ✅ MUST MATCH FRONTEND
 GOOGLE_CLIENT_ID = "476303882358-l5r21fd2iretal5pc6qmgga8drll0r8q.apps.googleusercontent.com"
 
 class_labels = {0: "infected", 1: "non_infected"}
 
 # ================= ROUTES ================= #
 
-# 🔮 PERIOD PREDICTION + SAVE
+# 🔮 PERIOD PREDICTION + UPDATE (FIXED)
 @app.route("/predict", methods=["POST"])
 def predict():
     try:
@@ -76,7 +77,6 @@ def predict():
             return jsonify({"error": "Enter at least 2 dates"}), 400
 
         parsed = sorted(datetime.strptime(d, "%Y-%m-%d") for d in dates)
-
         cycles = [(parsed[i+1] - parsed[i]).days for i in range(len(parsed)-1)]
 
         if len(cycles) < 3:
@@ -93,15 +93,20 @@ def predict():
 
         predicted_str = next_date.strftime("%Y-%m-%d")
 
-        # ✅ SAVE TO DB
-        periods_collection.insert_one({
-            "email": email,
-            "dates": dates,
-            "predicted_date": predicted_str,
-            "created_at": datetime.utcnow()
-        })
+        # ✅ UPSERT (NO DUPLICATES)
+        periods_collection.update_one(
+            {"email": email},
+            {
+                "$set": {
+                    "dates": dates,
+                    "predicted_date": predicted_str,
+                    "updated_at": datetime.utcnow()
+                }
+            },
+            upsert=True
+        )
 
-        print("✅ Saved to Mongo:", email)
+        print("✅ Updated Mongo:", email)
 
         return jsonify({
             "predicted_date": predicted_str
@@ -112,14 +117,31 @@ def predict():
         return jsonify({"error": str(e)}), 500
 
 
+# 📥 GET SAVED DATA (NEW)
+@app.route("/get-periods", methods=["POST"])
+def get_periods():
+    try:
+        email = request.json.get("email")
+
+        user_data = periods_collection.find_one({"email": email})
+
+        if not user_data:
+            return jsonify({"dates": []})
+
+        return jsonify({
+            "dates": user_data.get("dates", []),
+            "predicted_date": user_data.get("predicted_date")
+        })
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 # 🔐 GOOGLE LOGIN
 @app.route("/verify-token", methods=["POST"])
 def verify_token():
     try:
         token = request.json.get("token")
-
-        if not token:
-            return jsonify({"error": "No token provided"}), 400
 
         id_info = id_token.verify_oauth2_token(
             token, requests.Request(), GOOGLE_CLIENT_ID
@@ -127,8 +149,6 @@ def verify_token():
 
         email = id_info["email"]
         name = id_info["name"]
-
-        print("✅ LOGIN SUCCESS:", email)
 
         if not users_collection.find_one({"email": email}):
             users_collection.insert_one({
@@ -147,16 +167,7 @@ def verify_token():
 @app.route("/upload", methods=["POST"])
 def upload_image():
     try:
-        if "file" not in request.files:
-            return jsonify({"error": "No file uploaded"}), 400
-
         file = request.files["file"]
-
-        if file.filename == "":
-            return jsonify({"error": "Empty filename"}), 400
-
-        if not allowed_file(file.filename):
-            return jsonify({"error": "Invalid file type"}), 400
 
         filename = secure_filename(file.filename)
         path = os.path.join(UPLOAD_FOLDER, filename)
@@ -175,7 +186,6 @@ def upload_image():
         })
 
     except Exception as e:
-        print("❌ UPLOAD ERROR:", str(e))
         return jsonify({"error": str(e)}), 500
 
 
@@ -185,30 +195,12 @@ def generate_diet():
     try:
         data = request.json
 
-        meal = data.get("meal")
-        diet = data.get("diet")
-        age = data.get("age")
-        goal = data.get("goal")
-
-        if not meal or not diet or not age or not goal:
-            return jsonify({"error": "Missing inputs"}), 400
-
         prompt = f"""
 Generate ONLY valid JSON.
 
-7-day PCOS-friendly {diet} diet plan for {meal}.
-Age: {age}
-Goal: {goal}
-
-Return:
-{{
-  "days": [
-    {{
-      "day": "Day 1",
-      "meal": "Oats with fruits"
-    }}
-  ]
-}}
+7-day PCOS-friendly {data.get("diet")} diet plan for {data.get("meal")}.
+Age: {data.get("age")}
+Goal: {data.get("goal")}
 """
 
         response = gemini.generate_content(prompt)
@@ -217,26 +209,19 @@ Return:
         if text.startswith("```"):
             text = text.replace("```json", "").replace("```", "").strip()
 
-        match = re.search(r'\{.*\}', text, re.DOTALL)
-
-        if not match:
-            return jsonify({"error": "Invalid AI response"}), 500
-
-        parsed = json.loads(match.group())
+        parsed = json.loads(re.search(r'\{.*\}', text, re.DOTALL).group())
 
         return jsonify(parsed)
 
     except Exception as e:
-        print("❌ DIET ERROR:", str(e))
         return jsonify({"error": str(e)}), 500
 
-#HOME PAGE
-# 🧮 BMI PREDICTION
+
+# 🧮 BMI
 @app.route("/bmi", methods=["POST"])
 def bmi_predict():
     try:
-        data = request.json
-        bmi = float(data.get("bmi"))
+        bmi = float(request.json.get("bmi"))
 
         if bmi < 18.5:
             category = "Underweight"
@@ -247,14 +232,12 @@ def bmi_predict():
         else:
             category = "Obese"
 
-        return jsonify({
-            "bmi": bmi,
-            "category": category
-        })
+        return jsonify({"category": category})
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-    
+
+
 # ================= RUN ================= #
 if __name__ == "__main__":
     print("🚀 Server running on http://localhost:5000")

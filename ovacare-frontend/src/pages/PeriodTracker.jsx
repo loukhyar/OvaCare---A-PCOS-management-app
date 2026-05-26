@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Layout from "../components/Layout";
 import "../styles/styles.css";
 
@@ -20,6 +20,37 @@ function PeriodTracker() {
       String(date.getDate()).padStart(2, "0")
     );
   };
+
+  // 🔥 LOAD SAVED DATA (VERY IMPORTANT)
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/get-periods", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: localStorage.getItem("userEmail"),
+          }),
+        });
+
+        const data = await res.json();
+
+        if (data.dates) {
+          setSelectedDates(data.dates);
+        }
+
+        if (data.predicted_date) {
+          setPredictedDate(data.predicted_date);
+        }
+      } catch (err) {
+        console.log("❌ Error loading saved data");
+      }
+    };
+
+    fetchData();
+  }, []);
 
   // 🔁 Month navigation
   const changeMonth = (offset) => {
@@ -81,14 +112,13 @@ function PeriodTracker() {
 
     let days = [];
 
-    // empty slots
     for (let i = 0; i < firstDay; i++) {
       days.push(<div key={"empty" + i}></div>);
     }
 
     for (let d = 1; d <= daysInMonth; d++) {
       const dateObj = new Date(year, month, d);
-      const dateStr = formatDate(dateObj); // ✅ FIXED HERE
+      const dateStr = formatDate(dateObj);
 
       const isSelected = selectedDates.includes(dateStr);
       const isToday =
