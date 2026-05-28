@@ -130,11 +130,8 @@ docker run -d -p 80:80 ovacare-frontend
 
 ## 📸 Screenshots
 
-![alt text](image.png)
-![alt text](image-1.png)
-![alt text](image-2.png)
-![alt text](image-3.png)
-![alt text](image-4.png)
+<img width="324" height="286" alt="Screenshot 2024-05-29 183802" src="https://github.com/user-attachments/assets/c4bc004f-68de-4e21-8a63-7c2bfa23aa8a" />
+
 ---
 
 ## ✨ Future Improvements
