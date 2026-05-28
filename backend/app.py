@@ -28,7 +28,7 @@ gemini = genai.GenerativeModel("gemini-2.5-flash")
 
 # ================= FLASK ================= #
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins=["http://ovacare.duckdns.org"])
 
 # ================= MONGO ================= #
 mongo_uri = os.getenv("MONGO_URI")
@@ -41,7 +41,6 @@ db = client_db["pcos_db"]
 users_collection = db["users"]
 periods_collection = db["periods"]
 
-# ✅ Prevent duplicate users
 periods_collection.create_index("email", unique=True)
 
 print("✅ MongoDB Connected")
@@ -65,7 +64,6 @@ class_labels = {0: "infected", 1: "non_infected"}
 
 # ================= ROUTES ================= #
 
-# 🔮 PERIOD PREDICTION + UPDATE (FIXED)
 @app.route("/predict", methods=["POST"])
 def predict():
     try:
@@ -93,7 +91,6 @@ def predict():
 
         predicted_str = next_date.strftime("%Y-%m-%d")
 
-        # ✅ UPSERT (NO DUPLICATES)
         periods_collection.update_one(
             {"email": email},
             {
@@ -106,23 +103,16 @@ def predict():
             upsert=True
         )
 
-        print("✅ Updated Mongo:", email)
-
-        return jsonify({
-            "predicted_date": predicted_str
-        })
+        return jsonify({"predicted_date": predicted_str})
 
     except Exception as e:
-        print("❌ PREDICT ERROR:", str(e))
         return jsonify({"error": str(e)}), 500
 
 
-# 📥 GET SAVED DATA (NEW)
 @app.route("/get-periods", methods=["POST"])
 def get_periods():
     try:
         email = request.json.get("email")
-
         user_data = periods_collection.find_one({"email": email})
 
         if not user_data:
@@ -137,7 +127,6 @@ def get_periods():
         return jsonify({"error": str(e)}), 500
 
 
-# 🔐 GOOGLE LOGIN
 @app.route("/verify-token", methods=["POST"])
 def verify_token():
     try:
@@ -159,11 +148,9 @@ def verify_token():
         return jsonify({"email": email, "name": name})
 
     except Exception as e:
-        print("❌ LOGIN ERROR:", str(e))
         return jsonify({"error": str(e)}), 400
 
 
-# 🧠 SONOGRAPHY
 @app.route("/upload", methods=["POST"])
 def upload_image():
     try:
@@ -189,16 +176,35 @@ def upload_image():
         return jsonify({"error": str(e)}), 500
 
 
-# 🤖 AI DIET
+# ================= AI DIET (FINAL + SMART FALLBACK) ================= #
 @app.route("/generate-diet", methods=["POST"])
 def generate_diet():
     try:
         data = request.json
 
         prompt = f"""
-Generate ONLY valid JSON.
+Return ONLY valid JSON. No explanation.
 
-7-day PCOS-friendly {data.get("diet")} diet plan for {data.get("meal")}.
+Format EXACTLY:
+{{
+  "days": [
+    {{
+      "day": "Day 1",
+      "meal": {{
+        "breakfast": "food",
+        "lunch": "food",
+        "dinner": "food"
+      }}
+    }}
+  ]
+}}
+
+Generate 7 UNIQUE days (NO repetition).
+
+Make meals different for each day.
+
+PCOS-friendly {data.get("diet")} diet plan.
+Focus: {data.get("meal")}
 Age: {data.get("age")}
 Goal: {data.get("goal")}
 """
@@ -206,18 +212,81 @@ Goal: {data.get("goal")}
         response = gemini.generate_content(prompt)
         text = response.text.strip()
 
-        if text.startswith("```"):
-            text = text.replace("```json", "").replace("```", "").strip()
+        print("🔍 RAW GEMINI RESPONSE:\n", text)
 
-        parsed = json.loads(re.search(r'\{.*\}', text, re.DOTALL).group())
+        text = text.replace("```json", "").replace("```", "").strip()
+
+        start = text.find("{")
+        end = text.rfind("}") + 1
+
+        if start == -1 or end == -1:
+            raise ValueError("No valid JSON found")
+
+        json_str = text[start:end]
+
+        json_str = re.sub(r",\s*}", "}", json_str)
+        json_str = re.sub(r",\s*]", "]", json_str)
+
+        # ✅ FIXED POSITION
+        parsed = json.loads(json_str)
+
+        selected_meal = data.get("meal")
+
+        # 🔥 FILTER HERE
+        for day in parsed["days"]:
+            day["meal"] = {
+                selected_meal: day["meal"].get(selected_meal)
+            }
+
+        if "days" not in parsed or len(parsed["days"]) < 7:
+            raise ValueError("Invalid AI structure")
 
         return jsonify(parsed)
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        print("❌ DIET ERROR:", str(e))
 
+        import random
 
-# 🧮 BMI
+        selected_meal = data.get("meal")
+
+        veg_meals = [
+            {"breakfast": "Oats with fruits", "lunch": "Brown rice + dal", "dinner": "Vegetable soup"},
+            {"breakfast": "Smoothie bowl", "lunch": "Quinoa + chickpeas", "dinner": "Salad"},
+            {"breakfast": "Upma", "lunch": "Roti + sabzi", "dinner": "Paneer salad"},
+            {"breakfast": "Poha", "lunch": "Vegetable pulao", "dinner": "Lentil soup"},
+            {"breakfast": "Idli + sambar", "lunch": "Curd rice", "dinner": "Stir fry veggies"},
+            {"breakfast": "Avocado toast", "lunch": "Millet + curry", "dinner": "Soup"},
+            {"breakfast": "Fruit salad", "lunch": "Khichdi", "dinner": "Grilled paneer"},
+        ]
+
+        nonveg_meals = [
+            {"breakfast": "Boiled eggs", "lunch": "Chicken rice", "dinner": "Grilled chicken"},
+            {"breakfast": "Omelette", "lunch": "Fish curry", "dinner": "Chicken soup"},
+            {"breakfast": "Egg sandwich", "lunch": "Chicken salad", "dinner": "Boiled eggs"},
+            {"breakfast": "Scrambled eggs", "lunch": "Grilled fish", "dinner": "Soup"},
+            {"breakfast": "Egg wrap", "lunch": "Chicken biryani", "dinner": "Egg salad"},
+            {"breakfast": "Protein smoothie", "lunch": "Chicken sandwich", "dinner": "Salad"},
+            {"breakfast": "Egg dosa", "lunch": "Fish fry", "dinner": "Soup"},
+        ]
+
+        diet_type = data.get("diet", "").lower()
+        meal_pool = nonveg_meals if "non" in diet_type else veg_meals
+
+        selected = random.sample(meal_pool, 7)
+
+        return jsonify({
+            "days": [
+                {
+                    "day": f"Day {i+1}",
+                    "meal": {
+                        selected_meal: selected[i].get(selected_meal)
+                    }
+                }
+                for i in range(7)
+            ]
+        })
+    
 @app.route("/bmi", methods=["POST"])
 def bmi_predict():
     try:
@@ -240,5 +309,5 @@ def bmi_predict():
 
 # ================= RUN ================= #
 if __name__ == "__main__":
-    print("🚀 Server running on http://localhost:5000")
+    print("🚀 Server running on http://backend:5000")
     app.run(host="0.0.0.0", port=5000, debug=True)

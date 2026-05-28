@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Layout from "../components/Layout";
 import "../styles/styles.css";
 
@@ -12,6 +12,19 @@ function Nutritionguide() {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // ✅ HANDLE BODY SCROLL LOCK
+  useEffect(() => {
+    if (showModal) {
+      document.body.classList.add("modal-open");
+    } else {
+      document.body.classList.remove("modal-open");
+    }
+
+    return () => {
+      document.body.classList.remove("modal-open");
+    };
+  }, [showModal]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -24,7 +37,7 @@ function Nutritionguide() {
       setLoading(true);
       setPlan([]);
 
-      const res = await fetch("http://localhost:5000/generate-diet", {
+      const res = await fetch("http://ovacare.duckdns.org/generate-diet", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -38,10 +51,15 @@ function Nutritionguide() {
       });
 
       const data = await res.json();
+      console.log("API RESPONSE:", data);
 
-      // ✅ NEW JSON handling
-      if (!data.days) {
-        alert(data.error || "Something went wrong");
+      if (data.error) {
+        alert(data.error);
+        return;
+      }
+
+      if (!Array.isArray(data.days)) {
+        alert("Invalid response from server");
         return;
       }
 
@@ -49,24 +67,26 @@ function Nutritionguide() {
       setShowModal(true);
 
     } catch (err) {
+      console.error(err);
       alert("Error generating plan");
     } finally {
       setLoading(false);
     }
   };
 
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
   return (
     <Layout>
-
       <section className="hero">
         <div className="text-container">
           <h1 className="hero-title">
-  AI Nutrition Planner 🥗✨
-</h1>
+            AI Nutrition Planner 🥗✨
+          </h1>
 
           <form onSubmit={handleSubmit}>
-
-            {/* Meal */}
             <div className="form-group">
               <label>Meal Time:</label>
               <select
@@ -80,7 +100,6 @@ function Nutritionguide() {
               </select>
             </div>
 
-            {/* Diet */}
             <div className="form-group">
               <label>Diet Type:</label>
               <select
@@ -93,7 +112,6 @@ function Nutritionguide() {
               </select>
             </div>
 
-            {/* Age */}
             <div className="form-group">
               <label>Age:</label>
               <input
@@ -103,7 +121,6 @@ function Nutritionguide() {
               />
             </div>
 
-            {/* Goal */}
             <div className="form-group">
               <label>Goal:</label>
               <select
@@ -120,33 +137,40 @@ function Nutritionguide() {
             <button type="submit" disabled={loading}>
               {loading ? "Generating..." : "Generate Plan"}
             </button>
-
           </form>
         </div>
       </section>
 
-      {/* Modal */}
+      {/* ✅ MODAL */}
       {showModal && (
-        <div className="modal" onClick={() => setShowModal(false)}>
+        <div className="modal" onClick={closeModal}>
           <div
             className="modal-content"
             onClick={(e) => e.stopPropagation()}
           >
-            <span
-              className="close-btn"
-              onClick={() => setShowModal(false)}
-            >
+            <span className="close-btn" onClick={closeModal}>
               &times;
             </span>
 
             <h2>Your AI Diet Plan</h2>
 
-            {/* ✅ STRUCTURED UI */}
             <div className="card-container">
               {plan.map((item, index) => (
                 <div key={index} className="card">
                   <h3>{item.day}</h3>
-                  <p>{item.meal}</p>
+
+                  {/* ✅ ONLY SHOW SELECTED MEAL */}
+                  <ul>
+                    {item.meal[mealTime] && (
+                      <li>
+                        <strong style={{ textTransform: "capitalize" }}>
+                          {mealTime}:
+                        </strong>{" "}
+                        {item.meal[mealTime]}
+                      </li>
+                    )}
+                  </ul>
+
                 </div>
               ))}
             </div>
@@ -154,7 +178,6 @@ function Nutritionguide() {
           </div>
         </div>
       )}
-
     </Layout>
   );
 }

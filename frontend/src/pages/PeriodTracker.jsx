@@ -25,7 +25,7 @@ function PeriodTracker() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("http://localhost:5000/get-periods", {
+        const res = await fetch("http://ovacare.duckdns.org/get-periods", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -76,7 +76,7 @@ function PeriodTracker() {
     }
 
     try {
-      const res = await fetch("http://localhost:5000/predict", {
+      const res = await fetch("http://ovacare.duckdns.org/predict", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

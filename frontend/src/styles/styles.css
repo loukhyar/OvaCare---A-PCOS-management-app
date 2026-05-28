@@ -562,6 +562,17 @@ button:hover {
     flex-direction: column;
   }
 }
+/* ===== GLOBAL ===== */
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* Prevent background scroll when modal open */
+body.modal-open {
+  overflow: hidden;
+}
+
 /* ===== NUTRITION GUIDE ===== */
 
 .hero {
@@ -649,20 +660,30 @@ button:hover {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.4);
+
+  background: rgba(0, 0, 0, 0.6);
+
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+
   z-index: 999;
+
+  overflow-y: auto;
+  padding: 40px 20px;
 }
 
 /* ===== MODAL CONTENT ===== */
 .modal-content {
   background: #fff;
-  padding: 30px;
+  padding: 35px;
   border-radius: 20px;
-  width: 90%;
-  max-width: 700px;
+
+  width: 95%;              /* 🔥 full width feel */
+  max-width: 1200px;       /* 🔥 wider layout */
+
+  margin: 40px auto;
+
   position: relative;
   animation: fadeIn 0.5s ease-in-out;
 }
@@ -672,7 +693,7 @@ button:hover {
   position: absolute;
   top: 12px;
   right: 15px;
-  font-size: 1.5em;
+  font-size: 1.6em;
   cursor: pointer;
   color: #c2185b;
 }
@@ -681,39 +702,53 @@ button:hover {
 .modal-content h2 {
   text-align: center;
   color: #c2185b;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
+  font-size: 1.8rem;
 }
 
 /* ===== CARD GRID ===== */
 .card-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 15px;
+
+  /* 🔥 bigger cards */
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+
+  gap: 25px;
+  padding-top: 10px;
 }
 
-/* ===== INDIVIDUAL CARD ===== */
+/* ===== CARD ===== */
 .card {
   background: #ffe4ec;
-  padding: 15px;
+  padding: 20px;
   border-radius: 15px;
-  text-align: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+
   transition: all 0.3s ease;
+  line-height: 1.6;
 }
 
 .card:hover {
-  transform: translateY(-5px) scale(1.03);
+  transform: translateY(-6px) scale(1.02);
   background: #fce4ec;
 }
 
 /* DAY TITLE */
 .card h3 {
   color: #ad1457;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
+  font-size: 1.2rem;
 }
 
-/* MEAL TEXT */
-.card p {
+/* LIST STYLE (IMPORTANT CLEANUP) */
+.card ul {
+  padding-left: 0;
+  list-style: none;
+}
+
+.card li {
+  margin-bottom: 6px;
   font-size: 0.9em;
   color: #333;
 }
@@ -738,6 +773,11 @@ button:hover {
 
   .hero-title {
     font-size: 1.8em;
+  }
+
+  .modal-content {
+    max-width: 95%;
+    padding: 20px;
   }
 }
 /* ===== PERIOD TRACKER ===== */
