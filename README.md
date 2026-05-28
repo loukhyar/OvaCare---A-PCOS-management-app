@@ -1,124 +1,154 @@
+# 🌸 OvaCare – PCOS Management & AI Health Platform
 
-# 🌸 OvaCare - PCOS Management & Cycle Prediction
-
-**OvaCare** is an AI-powered web application designed to help women manage Polycystic Ovary Syndrome (PCOS) through personalized cycle tracking and lifestyle insights. It leverages machine learning (LSTM) to predict menstrual cycles and offers a supportive digital companion for hormonal health awareness.
+**OvaCare** is a full-stack AI-powered web application designed to help manage **PCOS (Polycystic Ovary Syndrome)** through smart cycle prediction, AI diet planning, and health tracking. It combines **machine learning, generative AI, and modern web technologies** to provide a personalized health assistant.
 
 ---
 
-## 🧠 Features
+## 🚀 Features
 
-- 🔄 **Cycle Prediction** using LSTM-based deep learning
-- 🧪 Input form for user symptoms and cycle data
-- 📈 Visualizations and logs for period tracking
-- 🔐 Google OAuth 2.0-based secure login
-- 📊 Support for custom datasets and retraining the model
-- 🌐 Deployed as a Flask app with RESTful API endpoints
+### 🧠 AI & ML
+
+| Feature | Description |
+|--------|-------------|
+| 🔄 Menstrual Cycle Prediction | LSTM model predicts next cycle based on historical data |
+| 🥗 AI Diet Planner | Gemini API generates 7-day plans filtered by meal type |
+| 🧪 PCOS Detection | CNN-based sonography image model for PCOS classification |
+
+---
+
+### 🌐 Web App Features
+
+| Feature | Description |
+|--------|-------------|
+| 🔐 Google OAuth Login | Secure authentication via Google |
+| 📅 Period Tracker | Track and store cycle data with predictions |
+| 📊 Health Insights | Logs and visualizations for health monitoring |
+| 📤 Image Upload | Upload sonography images for PCOS prediction |
+| 💡 Recommendations | Personalized health suggestions based on user data |
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Category        | Tech Used                        |
-|----------------|----------------------------------|
-| Frontend       | HTML, CSS, JS                    |
-| Backend        | Python, Flask                    |
-| Machine Learning | TensorFlow/Keras (LSTM)        |
-| Database       | MongoDB (or local CSV-based)     |
-| Authentication | Google OAuth 2.0                 |
+| Category | Tech Used |
+|----------|-----------|
+| Frontend | React (Vite), CSS |
+| Backend | Flask (Python) |
+| AI/ML | TensorFlow/Keras (LSTM, CNN) |
+| AI API | Google Gemini API |
+| Database | MongoDB |
+| Auth | Google OAuth 2.0 |
+| Deployment | Docker + Nginx + AWS + DuckDNS *(Kubernetes configs prepared)* |
 
 ---
 
-## 📂 Folder Structure
+## 📂 Project Structure
 
 ```
 OvaCare/
 │
-├── app.py                  # Main backend file
-├── train_lstm_model.py     # LSTM training script
-├── model (2).h5            # Trained LSTM model
-├── periodcycle.csv         # Dataset used for prediction
-├── requirements.txt        # Python dependencies
-├── .env                    # Environment variables
-└── .git/                   # Git repo data
+├── backend/
+│   ├── app.py
+│   ├── model/
+│   ├── uploads/
+│   ├── requirements.txt
+│   ├── Dockerfile
+│   └── .env
+│
+├── frontend/
+│   ├── src/
+│   │   ├── pages/
+│   │   ├── components/
+│   │   └── styles/
+│   ├── nginx.conf
+│   ├── Dockerfile
+│   └── package.json
+│
+├── backend-deployment.yaml
+├── frontend-deployment.yaml
+└── README.md
 ```
 
 ---
 
-## 🚀 Getting Started
+## ⚙️ Environment Variables
 
-### 1. Clone the Repository
+Create a `.env` file in the `backend/` directory:
 
-```bash
-git clone https://github.com/yourusername/OvaCare.git
-cd OvaCare
-```
-
-### 2. Create Virtual Environment
-
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-### 3. Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Configure Environment Variables
-
-Create a `.env` file with the following:
-
-```
-SECRET_KEY=your_flask_secret_key
+```env
+GEMINI_API_KEY=your_api_key
+MONGO_URI=your_mongo_uri
 GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
 ```
 
-### 5. Run the Application
+---
+
+## 🐳 Running with Docker
+
+### Backend
 
 ```bash
-python app.py
+cd backend
+docker build -t ovacare-backend .
+docker run -d -p 5000:5000 ovacare-backend
 ```
 
-Visit: `http://127.0.0.1:5000/` in your browser
-
----
-
-## 🔍 API Endpoints 
-
-| Method | Endpoint        | Description                      |
-|--------|------------------|----------------------------------|
-| POST   | `/predict`       | Predict cycle date using LSTM    |
-| GET    | `/login`         | Google OAuth login route         |
-| GET    | `/dashboard`     | User cycle and health summary    |
-
----
-
-## 🤖 LSTM Model
-
-- Implemented using **Keras LSTM** to predict next cycle date
-- Trained on user-entered data (`periodcycle.csv`)
-- Model file: `model (2).h5`
-- Retrain using:
+### Frontend
 
 ```bash
-python train_lstm_model.py
+cd frontend
+docker build -t ovacare-frontend .
+docker run -d -p 80:80 ovacare-frontend
 ```
 
 ---
 
-## 📷 Screenshots/Demo
+## 🌐 API Endpoints
 
-![Screenshot 2025-07-06 195743](https://github.com/user-attachments/assets/819a0a4e-38e5-4f32-bd99-2a8ee54e40c3)
-![Screenshot 2025-07-06 195901](https://github.com/user-attachments/assets/9aae356f-c51c-459d-8cc1-2b3268ee1d23)
-![Screenshot 2025-07-06 195924](https://github.com/user-attachments/assets/65c11fae-3f20-433e-8cb7-322b3a4feb9e)
-![Screenshot 2025-07-06 195949](https://github.com/user-attachments/assets/0571d0f0-3b47-4632-ac69-2a4b9482f0fa)
-![Screenshot 2025-07-06 200016](https://github.com/user-attachments/assets/ffd9d370-7899-42f0-a2f5-dc572ee00e06)
-![Screenshot 2025-07-06 200038](https://github.com/user-attachments/assets/ea43f040-b89e-4404-98f1-7b81ad61a4f3)
-![Screenshot 2025-07-06 200059](https://github.com/user-attachments/assets/f9facbe2-0f93-48cb-972e-cf6346834757)
-![Screenshot 2025-07-06 200110](https://github.com/user-attachments/assets/253f5c9f-80d3-4242-afd1-7ea212ac634e)
-![Screenshot 2025-07-06 200127](https://github.com/user-attachments/assets/57a2f87d-af62-49eb-b461-5c2c13382ec7)
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/predict` | Menstrual cycle prediction |
+| POST | `/generate-diet` | AI diet plan (filtered by meal) |
+| POST | `/upload` | Sonography image prediction |
+| POST | `/verify-token` | Google OAuth login |
+| POST | `/get-periods` | Fetch user period data |
+| POST | `/bmi` | BMI classification |
 
 ---
+
+## 🌍 Deployment
+
+| Component | Details |
+|-----------|---------|
+| 🌐 Domain | [http://ovacare.duckdns.org](http://ovacare.duckdns.org) |
+| 🐳 Backend | Port `5000` |
+| 🌐 Frontend | Served via Nginx on Port `80` |
+| ☁️ Hosting | AWS EC2 |
+| ☸️ Scaling | Kubernetes deployment files prepared |
+
+---
+
+## 📸 Screenshots
+
+![alt text](image.png)
+![alt text](image-1.png)
+![alt text](image-2.png)
+![alt text](image-3.png)
+![alt text](image-4.png)
+---
+
+## ✨ Future Improvements
+
+| Planned Feature | Description |
+|----------------|-------------|
+| 📱 Mobile App | Native iOS/Android version |
+| 🧬 Hormone Tracking | Advanced hormonal cycle analytics |
+| 👩‍⚕️ Doctor Integration | Connect with healthcare professionals |
+| 🔔 Notifications | Reminders and health alerts |
+
+---
+
+## 👩‍💻 Author
+
+**Loukhya Reddy**
+**Pranava Sai**
