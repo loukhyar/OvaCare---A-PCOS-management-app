@@ -37,7 +37,7 @@ function Nutritionguide() {
       setLoading(true);
       setPlan([]);
 
-      const res = await fetch("http://ovacare.duckdns.org/generate-diet", {
+      const res = await fetch("http://ovacare.duckdns.org:5000/generate-diet", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

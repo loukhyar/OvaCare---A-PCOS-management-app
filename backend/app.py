@@ -176,116 +176,66 @@ def upload_image():
         return jsonify({"error": str(e)}), 500
 
 
-# ================= AI DIET (FINAL + SMART FALLBACK) ================= #
+# 🤖 AI DIET
 @app.route("/generate-diet", methods=["POST"])
 def generate_diet():
     try:
-        data = request.json
-
+        data = request.get_json()
+        # User inputs
+        diet = data.get("diet")
+        age = data.get("age")
+        goal = data.get("goal")
+        # Selected meal type
+        meal_type = data.get("meal_type")
+        # Meal field based on selection
+        meal_field = ""
+        if meal_type == "breakfast":
+            meal_field = '"breakfast": ""'
+        elif meal_type == "lunch":
+            meal_field = '"lunch": ""'
+        elif meal_type == "dinner":
+            meal_field = '"dinner": ""'
+        else:
+            return jsonify({
+                "error": "Invalid meal type"
+            }), 400
+        # AI Prompt
         prompt = f"""
-Return ONLY valid JSON. No explanation.
-
-Format EXACTLY:
+You are a professional PCOS diet expert.
+Generate a 7-day PCOS-friendly diet plan.
+Return ONLY valid JSON.
+No explanations.
+No markdown.
+JSON format:
 {{
   "days": [
     {{
       "day": "Day 1",
-      "meal": {{
-        "breakfast": "food",
-        "lunch": "food",
-        "dinner": "food"
-      }}
+      {meal_field}
     }}
   ]
 }}
-
-Generate 7 UNIQUE days (NO repetition).
-
-Make meals different for each day.
-
-PCOS-friendly {data.get("diet")} diet plan.
-Focus: {data.get("meal")}
-Age: {data.get("age")}
-Goal: {data.get("goal")}
+User Details:
+Diet Type: {diet}
+Age: {age}
+Goal: {goal}
 """
-
         response = gemini.generate_content(prompt)
         text = response.text.strip()
-
-        print("🔍 RAW GEMINI RESPONSE:\n", text)
-
+        # Remove markdown
         text = text.replace("```json", "").replace("```", "").strip()
-
-        start = text.find("{")
-        end = text.rfind("}") + 1
-
-        if start == -1 or end == -1:
-            raise ValueError("No valid JSON found")
-
-        json_str = text[start:end]
-
-        json_str = re.sub(r",\s*}", "}", json_str)
-        json_str = re.sub(r",\s*]", "]", json_str)
-
-        # ✅ FIXED POSITION
-        parsed = json.loads(json_str)
-
-        selected_meal = data.get("meal")
-
-        # 🔥 FILTER HERE
-        for day in parsed["days"]:
-            day["meal"] = {
-                selected_meal: day["meal"].get(selected_meal)
-            }
-
-        if "days" not in parsed or len(parsed["days"]) < 7:
-            raise ValueError("Invalid AI structure")
-
-        return jsonify(parsed)
-
+        # Extract JSON
+        match = re.search(r'\{.*\}', text, re.DOTALL)
+        if not match:
+            return jsonify({
+                "error": "Invalid AI response"
+            }), 500
+        parsed_json = json.loads(match.group())
+        return jsonify(parsed_json)
     except Exception as e:
-        print("❌ DIET ERROR:", str(e))
-
-        import random
-
-        selected_meal = data.get("meal")
-
-        veg_meals = [
-            {"breakfast": "Oats with fruits", "lunch": "Brown rice + dal", "dinner": "Vegetable soup"},
-            {"breakfast": "Smoothie bowl", "lunch": "Quinoa + chickpeas", "dinner": "Salad"},
-            {"breakfast": "Upma", "lunch": "Roti + sabzi", "dinner": "Paneer salad"},
-            {"breakfast": "Poha", "lunch": "Vegetable pulao", "dinner": "Lentil soup"},
-            {"breakfast": "Idli + sambar", "lunch": "Curd rice", "dinner": "Stir fry veggies"},
-            {"breakfast": "Avocado toast", "lunch": "Millet + curry", "dinner": "Soup"},
-            {"breakfast": "Fruit salad", "lunch": "Khichdi", "dinner": "Grilled paneer"},
-        ]
-
-        nonveg_meals = [
-            {"breakfast": "Boiled eggs", "lunch": "Chicken rice", "dinner": "Grilled chicken"},
-            {"breakfast": "Omelette", "lunch": "Fish curry", "dinner": "Chicken soup"},
-            {"breakfast": "Egg sandwich", "lunch": "Chicken salad", "dinner": "Boiled eggs"},
-            {"breakfast": "Scrambled eggs", "lunch": "Grilled fish", "dinner": "Soup"},
-            {"breakfast": "Egg wrap", "lunch": "Chicken biryani", "dinner": "Egg salad"},
-            {"breakfast": "Protein smoothie", "lunch": "Chicken sandwich", "dinner": "Salad"},
-            {"breakfast": "Egg dosa", "lunch": "Fish fry", "dinner": "Soup"},
-        ]
-
-        diet_type = data.get("diet", "").lower()
-        meal_pool = nonveg_meals if "non" in diet_type else veg_meals
-
-        selected = random.sample(meal_pool, 7)
-
         return jsonify({
-            "days": [
-                {
-                    "day": f"Day {i+1}",
-                    "meal": {
-                        selected_meal: selected[i].get(selected_meal)
-                    }
-                }
-                for i in range(7)
-            ]
-        })
+            "error": str(e)
+        }), 500
     
 @app.route("/bmi", methods=["POST"])
 def bmi_predict():

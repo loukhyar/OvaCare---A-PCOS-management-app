@@ -17,7 +17,7 @@ function Login() {
       const id_token = response.credential;
 
       try {
-        const res = await fetch("http://ovacare.duckdns.org/verify-token", {
+        const res = await fetch("http://ovacare.duckdns.org:5000/verify-token", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ token: id_token }),

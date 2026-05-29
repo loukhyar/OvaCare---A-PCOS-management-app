@@ -19,7 +19,7 @@ function Home() {
     const bmi = e.target.bmi.value;
 
     try {
-      const res = await fetch("http://ovacare.duckdns.org/bmi", {
+      const res = await fetch("http://ovacare.duckdns.org:5000/bmi", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -20,9 +20,9 @@ spec:
             - containerPort: 5000
           env:
             - name: GEMINI_API_KEY
-              value: "AIzaSyBtJxiPTjao8uXEICSZGimnnA273XiPjsw"
+              value: "ur_key"
             - name: MONGO_URI
-              value: "mongodb+srv://loukhyaofficial:A8R.hMXJZX4uPzk@cluster0.rxqlwiu.mongodb.net/?appName=Cluster0"
+              value: "ur_key"
 ---
 apiVersion: v1
 kind: Service

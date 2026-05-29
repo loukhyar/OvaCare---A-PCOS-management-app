@@ -66,7 +66,7 @@ function SymptomChecker() {
     formData.append("file", file);
 
     try {
-      const res = await fetch("http://ovacare.duckdns.org/upload", {
+      const res = await fetch("http://ovacare.duckdns.org:5000/upload", {
         method: "POST",
         body: formData,
       });
