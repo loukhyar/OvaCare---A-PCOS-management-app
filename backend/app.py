@@ -58,7 +58,7 @@ cycle_model = load_model("model/lstm_period_predictor.h5")
 sonography_model = load_model("model (2).h5")
 scaler = joblib.load("model/scaler.save")
 
-GOOGLE_CLIENT_ID = "476303882358-l5r21fd2iretal5pc6qmgga8drll0r8q.apps.googleusercontent.com"
+GOOGLE_CLIENT_ID = "client-id"
 
 class_labels = {0: "infected", 1: "non_infected"}
 
